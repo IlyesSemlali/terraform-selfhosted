@@ -1,0 +1,21 @@
+#  Local .terraform directories
+.terraform
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# .tfvars files
+*.auto.tfvars
+secret.tfvars
+*.tfvars
+
+test_module/*
+provider.tf
+**/inspec.lock
+**/vendor
+my-profile
+
+.vscode/
+
+backend.tf
