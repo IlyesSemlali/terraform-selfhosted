@@ -23,3 +23,16 @@ provider "google" {
   region  = var.region
   zone    = var.zone
 }
+
+data "google_client_config" "default" {}
+
+provider "kubernetes" {
+  host                   = "https://${module.kubernetes[0].endpoint}"
+  token                  = data.google_client_config.default.access_token
+  cluster_ca_certificate = base64decode(module.kubernetes[0].ca_certificate)
+
+  ignore_annotations = [
+    "^autopilot\\.gke\\.io\\/.*",
+    "^cloud\\.google\\.com\\/.*"
+  ]
+}
