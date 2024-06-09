@@ -20,3 +20,11 @@ variable "zone" {
   description = "Google Cloud default compute zone"
   default     = "europe-west1-d"
 }
+
+variable "flux_repository" {
+  description = "Gitrepository where Flux will initialize and get its sources"
+}
+
+variable "github_owner" {
+  description = "Github user or organization owning the flux repositories"
+}

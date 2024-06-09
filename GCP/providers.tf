@@ -1,3 +1,4 @@
+data "google_client_config" "default" {}
 
 terraform {
   required_version = ">= 0.13"
@@ -10,6 +11,10 @@ terraform {
     local = {
       source  = "hashicorp/local"
       version = "2.4.0"
+    }
+    flux = {
+      source  = "fluxcd/flux"
+      version = "1.3.0"
     }
     tls = {
       source  = "hashicorp/tls"
@@ -24,8 +29,6 @@ provider "google" {
   zone    = var.zone
 }
 
-data "google_client_config" "default" {}
-
 provider "kubernetes" {
   host                   = "https://${module.kubernetes[0].endpoint}"
   token                  = data.google_client_config.default.access_token
@@ -35,4 +38,23 @@ provider "kubernetes" {
     "^autopilot\\.gke\\.io\\/.*",
     "^cloud\\.google\\.com\\/.*"
   ]
+}
+
+provider "flux" {
+  kubernetes = {
+    host                   = "https://${module.kubernetes[0].endpoint}"
+    token                  = data.google_client_config.default.access_token
+    cluster_ca_certificate = base64decode(module.kubernetes[0].ca_certificate)
+  }
+  git = {
+    url = "ssh://git@github.com/${var.github_owner}/${var.flux_repository}.git"
+    ssh = {
+      username    = "git"
+      private_key = module.flux.tls_private_key
+    }
+  }
+}
+
+provider "github" {
+  owner = var.github_owner
 }

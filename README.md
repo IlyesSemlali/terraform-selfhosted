@@ -14,7 +14,14 @@ This repo is intended to be forked in order to provide you a simple enough way o
 
 ### Google Cloud
 
+- Install the google-cloud-sdk
+- Authenticate to googl: `gcloud auth login`
+- Install the kubectl component with `gcloud component install kubectl`
+
 ### Github
+
+- Install the `gh` client
+- Authenticate to github: `gh auth login`
 
 ### Cloudflare
 

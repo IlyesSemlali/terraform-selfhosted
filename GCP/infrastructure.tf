@@ -11,3 +11,8 @@ module "kubernetes" {
   cluster_name = "self-hosted"
 
 }
+
+module "flux" {
+  source            = "./tf_modules/flux"
+  github_repository = var.flux_repository
+}
