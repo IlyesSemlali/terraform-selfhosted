@@ -26,5 +26,5 @@ resource "flux_bootstrap_git" "main" {
   depends_on = [github_repository_deploy_key.flux]
 
   embedded_manifests = true
-  path               = "./"
+  path               = "./flux"
 }

@@ -29,17 +29,22 @@ variable "github_owner" {
   description = "Github user or organization owning the flux repositories"
 }
 
-variable "kubernetes_node_type" {
+variable "kubernetes_permanent_node_type" {
   description = "Instances types for the Kubernetes cluster nodes, can be pricy !"
   default     = "n4-standard-2"
 }
 
-variable "kubernetes_min_nodes" {
+variable "kubernetes_extra_node_type" {
+  description = "Instances types for the Kubernetes cluster nodes, can be pricy !"
+  default     = "n4-standard-2"
+}
+
+variable "kubernetes_min_extra_nodes" {
   description = "Minimum amount of nodes on the cluster"
   default     = 1
 }
 
-variable "kubernetes_max_nodes" {
+variable "kubernetes_max_extra_nodes" {
   description = "Maximum amount of nodes on the cluster"
   default     = 1
 }
