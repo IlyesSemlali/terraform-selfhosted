@@ -1,19 +1,21 @@
 module "network" {
   source = "./tf_modules/network"
   domain = var.domain
+
+  kubernetes_cluster_name = var.kubernetes_cluster_name
 }
 
 module "kubernetes" {
   source = "./tf_modules/kubernetes"
   count  = var.off ? 0 : 1
 
+  region                = var.region
   zone                  = var.zone
-  cluster_name          = "self-hosted"
-  permanent_node_type   = var.kubernetes_permanent_node_type
-  extra_node_type       = var.kubernetes_extra_node_type
+  cluster_name          = var.kubernetes_cluster_name
+  permanent_nodes_type  = var.kubernetes_permanent_nodes_type
+  extra_nodes_type      = var.kubernetes_extra_nodes_type
   min_extra_nodes_count = var.kubernetes_min_extra_nodes
   max_extra_nodes_count = var.kubernetes_max_extra_nodes
-
 }
 
 module "flux" {

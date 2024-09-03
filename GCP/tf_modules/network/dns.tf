@@ -18,3 +18,10 @@ resource "google_dns_managed_zone" "main" {
 
 }
 
+resource "google_dns_record_set" "ingress_dns" {
+  name         = "${var.domain}."
+  managed_zone = google_dns_managed_zone.main.name
+  type         = "A"
+  ttl          = 300
+  rrdatas      = [google_compute_global_address.ip_reservation.address]
+}

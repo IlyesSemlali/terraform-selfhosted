@@ -6,11 +6,20 @@ variable "zone" {
   description = "GCP Zone"
 }
 
-variable "permanent_node_type" {
+variable "region" {
+  description = "GCP Region"
+}
+
+variable "permanent_nodes_type" {
   description = "Instances type for the Kubernetes permanent nodes"
 }
 
-variable "extra_node_type" {
+variable "permanent_nodes_count" {
+  description = "Number of instances for the Kubernetes permanent node pool"
+  default     = 1
+}
+
+variable "extra_nodes_type" {
   description = "Instances types for the Kubernetes cluster nodes, can be pricy ! (if empty, no extra nodes are set)"
   default     = null
 }

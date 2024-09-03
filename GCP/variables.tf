@@ -29,12 +29,22 @@ variable "github_owner" {
   description = "Github user or organization owning the flux repositories"
 }
 
-variable "kubernetes_permanent_node_type" {
+variable "kubernetes_cluster_name" {
+  description = "Kubernetes cluster name"
+  default     = "self-hosted"
+}
+
+variable "kubernetes_permanent_nodes_type" {
   description = "Instances types for the Kubernetes cluster nodes, can be pricy !"
   default     = "n4-standard-2"
 }
 
-variable "kubernetes_extra_node_type" {
+variable "kubernetes_permanent_nodes_count" {
+  description = "Number of instances for the Kubernetes permanent node pool"
+  default     = 1
+}
+
+variable "kubernetes_extra_nodes_type" {
   description = "Instances types for the Kubernetes cluster nodes, can be pricy !"
   default     = "n4-standard-2"
 }

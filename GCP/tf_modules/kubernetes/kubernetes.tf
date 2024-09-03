@@ -5,21 +5,20 @@ resource "google_service_account" "gke-service-account" {
 
 resource "google_container_cluster" "gke-cluster" {
   name     = var.cluster_name
-  location = var.zone
+  location = var.region
 
   remove_default_node_pool = true
   initial_node_count       = 1
 }
 
 resource "google_container_node_pool" "permanent" {
-  name       = "${var.cluster_name}-permanent-node-pool"
-  location   = var.zone
-  cluster    = google_container_cluster.gke-cluster.name
-  node_count = 1
+  name     = "${var.cluster_name}-permanent-node-pool"
+  location = var.region
+  cluster  = google_container_cluster.gke-cluster.name
 
   node_config {
     preemptible  = true
-    machine_type = var.permanent_node_type
+    machine_type = var.permanent_nodes_type
 
     # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
     service_account = google_service_account.gke-service-account.email
@@ -30,22 +29,21 @@ resource "google_container_node_pool" "permanent" {
   }
 
   autoscaling {
-    min_node_count = 1
-    max_node_count = 1
+    total_min_node_count = var.permanent_nodes_count
+    total_max_node_count = var.permanent_nodes_count
   }
 }
 
 resource "google_container_node_pool" "extra" {
-  count = var.extra_node_type == null ? 0 : 1
+  count = var.extra_nodes_type == null ? 0 : 1
   name  = "${var.cluster_name}-extra-node-pool"
 
-  location   = var.zone
-  cluster    = google_container_cluster.gke-cluster.name
-  node_count = 1
+  location = var.region
+  cluster  = google_container_cluster.gke-cluster.name
 
   node_config {
     preemptible  = true
-    machine_type = var.extra_node_type
+    machine_type = var.extra_nodes_type
 
     # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
     service_account = google_service_account.gke-service-account.email
@@ -56,7 +54,7 @@ resource "google_container_node_pool" "extra" {
   }
 
   autoscaling {
-    min_node_count = var.min_extra_nodes_count
-    max_node_count = var.max_extra_nodes_count
+    total_min_node_count = var.min_extra_nodes_count
+    total_max_node_count = var.max_extra_nodes_count
   }
 }
