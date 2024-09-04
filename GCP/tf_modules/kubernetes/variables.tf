@@ -10,6 +10,10 @@ variable "region" {
   description = "GCP Region"
 }
 
+variable "deletion_protection" {
+  description = "Whether to block cluster deletion"
+}
+
 variable "permanent_nodes_type" {
   description = "Instances type for the Kubernetes permanent nodes"
 }

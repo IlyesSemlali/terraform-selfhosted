@@ -29,6 +29,11 @@ variable "github_owner" {
   description = "Github user or organization owning the flux repositories"
 }
 
+variable "deletion_protection" {
+  description = "Whether to block cluster deletion"
+  default     = true
+}
+
 variable "kubernetes_cluster_name" {
   description = "Kubernetes cluster name"
   default     = "self-hosted"
