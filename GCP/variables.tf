@@ -41,7 +41,7 @@ variable "kubernetes_cluster_name" {
 
 variable "kubernetes_permanent_nodes_type" {
   description = "Instances types for the Kubernetes cluster nodes, can be pricy !"
-  default     = "n4-standard-2"
+  default     = "e2-standard-2"
 }
 
 variable "kubernetes_permanent_nodes_count" {
@@ -51,7 +51,7 @@ variable "kubernetes_permanent_nodes_count" {
 
 variable "kubernetes_extra_nodes_type" {
   description = "Instances types for the Kubernetes cluster nodes, can be pricy !"
-  default     = "n4-standard-2"
+  default     = "e2-standard-2"
 }
 
 variable "kubernetes_min_extra_nodes" {
