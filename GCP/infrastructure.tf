@@ -9,8 +9,9 @@ module "kubernetes" {
   source = "./tf_modules/kubernetes"
   count  = var.off ? 0 : 1
 
-  region = var.region
-  zone   = var.zone
+  project = var.project
+  region  = var.region
+  zone    = var.zone
 
   cluster_name          = var.kubernetes_cluster_name
   lb_ip_address         = module.network.lb_ip_address

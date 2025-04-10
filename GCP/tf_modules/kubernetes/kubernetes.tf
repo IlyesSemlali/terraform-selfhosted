@@ -59,3 +59,14 @@ resource "google_container_node_pool" "extra" {
     total_max_node_count = var.max_extra_nodes_count
   }
 }
+
+# Also configured in Flux, it's needed for external-dns SA secret
+resource "kubernetes_namespace" "system" {
+  metadata {
+    name = "system"
+    labels = {
+      "kustomize.toolkit.fluxcd.io/name"      = "flux-system"
+      "kustomize.toolkit.fluxcd.io/namespace" = "flux-system"
+    }
+  }
+}

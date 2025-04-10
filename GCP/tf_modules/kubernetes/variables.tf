@@ -2,6 +2,10 @@ variable "cluster_name" {
   description = "GKE Cluster name"
 }
 
+variable "project" {
+  description = "GCP Project ID"
+}
+
 variable "zone" {
   description = "GCP Zone"
 }
