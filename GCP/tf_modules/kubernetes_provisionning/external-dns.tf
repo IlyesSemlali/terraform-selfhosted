@@ -17,7 +17,7 @@ resource "google_service_account_key" "external_dns_key" {
 resource "kubernetes_secret" "external_dns_sa" {
   metadata {
     name      = "external-dns-gcp-sa"
-    namespace = kubernetes_namespace.system.id
+    namespace = "system"
   }
 
   data = {
