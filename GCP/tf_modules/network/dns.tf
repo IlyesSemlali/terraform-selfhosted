@@ -17,3 +17,8 @@ resource "google_dns_managed_zone" "main" {
   timeouts {}
 
 }
+
+output "name_servers" {
+  value       = google_dns_managed_zone.main.name_servers
+  description = "Name Servers assigned for that domain"
+}
