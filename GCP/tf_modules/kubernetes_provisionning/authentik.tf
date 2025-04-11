@@ -11,6 +11,11 @@ resource "random_password" "postgres_password" {
 locals {
   authentik_values = {
     authentik = {
+
+      bootstrap_password = var.bootstrap_password
+      bootstrap_email    = var.bootstrap_email
+      bootstrap_token    = var.bootstrap_token
+
       secret_key = random_password.authentik_secret_key.result
       error_reporting = {
         enabled = true

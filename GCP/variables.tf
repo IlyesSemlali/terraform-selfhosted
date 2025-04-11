@@ -6,6 +6,11 @@ variable "domain" {
   description = "DNS Domain "
 }
 
+variable "owner_email" {
+  description = "Platform owner's email address"
+  # TODO: add validation
+}
+
 variable "off" {
   description = "Determines whether to turn on or off the infrastructure, while keeping the data alive"
   default     = false
@@ -62,4 +67,14 @@ variable "kubernetes_min_extra_nodes" {
 variable "kubernetes_max_extra_nodes" {
   description = "Maximum amount of nodes on the cluster"
   default     = 1
+}
+
+variable "authentik_bootstrap_password" {
+  description = "Authentik akadmin password"
+  sensitive   = true
+}
+
+variable "authentik_bootstrap_token" {
+  description = "Authentik akadmin token"
+  sensitive   = true
 }
