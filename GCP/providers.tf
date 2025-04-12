@@ -24,6 +24,10 @@ terraform {
       source  = "hashicorp/tls"
       version = "4.0.4"
     }
+    authentik = {
+      source  = "goauthentik/authentik"
+      version = "2025.2.0"
+    }
   }
 }
 
@@ -61,4 +65,10 @@ provider "flux" {
 
 provider "github" {
   owner = var.github_owner
+}
+
+provider "authentik" {
+  url   = "https://auth.${var.domain}"
+  token = var.authentik_bootstrap_token
+  # insecure = false # TODO: Prod uncomment this
 }

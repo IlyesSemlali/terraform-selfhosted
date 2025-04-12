@@ -2,6 +2,10 @@ variable "project" {
   description = "GCP Project ID"
 }
 
+variable "domain" {
+  description = "DNS Domain "
+}
+
 variable "bootstrap_email" {
   description = "Authentik akadmin email"
 }
