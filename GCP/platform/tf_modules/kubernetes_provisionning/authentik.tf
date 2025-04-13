@@ -109,7 +109,10 @@ resource "authentik_outpost" "forward_auth_outpost" {
 
   config = jsonencode({
     authentik_host          = format("https://auth.${var.domain}")
-    authentik_host_insecure = true
+    authentik_host_insecure = true # TODO: prod: Set this to false
+    kubernetes_disabled_components = [
+      "ingress"
+    ]
   })
 
   service_connection = authentik_service_connection_kubernetes.local.id

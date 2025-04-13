@@ -37,11 +37,3 @@ variable "max_extra_nodes_count" {
   description = "Maximum amount of nodes on the cluster"
   default     = 1
 }
-
-variable "lb_ip_address" {
-  description = "TCP LB IP Address that has beenreserved for this cluster"
-}
-
-variable "ingress_health_check_port" {
-  default = 32080 # TODO: set traefik HC
-}
