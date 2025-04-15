@@ -78,3 +78,4 @@ variable "authentik_bootstrap_token" {
   description = "Authentik akadmin token"
   sensitive   = true
 }
+

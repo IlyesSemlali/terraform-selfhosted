@@ -8,6 +8,15 @@ module "provisionning" {
   bootstrap_password = var.authentik_bootstrap_password
   bootstrap_token    = var.authentik_bootstrap_token
 
+  databases = [
+    {
+      application = "immich"
+      component   = "library"
+      password    = "immich_pass"
+      extensions  = ["vector"]
+    }
+  ]
+
   depends_on = [
     module.flux
   ]

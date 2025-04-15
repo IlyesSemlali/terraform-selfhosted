@@ -1,0 +1,43 @@
+data "google_compute_network" "primary_network" {
+  name = "default"
+}
+
+resource "google_compute_global_address" "private_ip_address" {
+  name          = "private-ip-address"
+  purpose       = "VPC_PEERING"
+  address_type  = "INTERNAL"
+  prefix_length = 16
+  network       = data.google_compute_network.primary_network.self_link
+}
+
+resource "google_service_networking_connection" "private_vpc_connection" {
+  network                 = data.google_compute_network.primary_network.self_link
+  service                 = "servicenetworking.googleapis.com"
+  reserved_peering_ranges = [google_compute_global_address.private_ip_address.name]
+}
+
+resource "google_sql_database_instance" "postgresql" {
+  name             = "postgresql"
+  database_version = "POSTGRES_15"
+  region           = var.region
+
+  settings {
+    tier = "db-f1-micro"
+
+    ip_configuration {
+      ipv4_enabled                                  = "false"
+      private_network                               = data.google_compute_network.primary_network.self_link
+      enable_private_path_for_google_cloud_services = true
+    }
+
+    # TODO: enable pgvector extension using SQL statement
+    # database_flags {
+    #   name  = "cloudsql.extensions"
+    #   value = "pgvector"
+    # }
+  }
+
+  deletion_protection = false
+
+  depends_on = [google_service_networking_connection.private_vpc_connection]
+}
