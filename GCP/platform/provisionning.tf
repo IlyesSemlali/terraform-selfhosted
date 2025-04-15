@@ -9,12 +9,14 @@ module "provisionning" {
   bootstrap_token    = var.authentik_bootstrap_token
 
   databases = [
-    {
-      application = "immich"
-      component   = "library"
-      password    = "immich_pass"
-      extensions  = ["vector"]
-    }
+    # the vector extension isn't the one
+    # supported by immich so it'll run in a container for now
+    # {
+    #   application = "immich"
+    #   component   = "library"
+    #   password    = "immich_pass"
+    #   extensions  = ["vector"]
+    # }
   ]
 
   depends_on = [
