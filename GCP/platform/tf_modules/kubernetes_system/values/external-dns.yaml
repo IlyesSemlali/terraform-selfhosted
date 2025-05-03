@@ -1,0 +1,31 @@
+provider:
+  name: google
+policy: sync
+
+  # project: ise-self-hosting # TODO: fetch this from a secret
+
+env:
+  - name: GOOGLE_APPLICATION_CREDENTIALS
+    value: /etc/secrets/service-account/key.json
+extraVolumes:
+  - name: google-service-account
+    secret:
+      secretName: external-dns-gcp-sa
+extraVolumeMounts:
+  - name: google-service-account
+    mountPath: /etc/secrets/service-account/
+domainFilters:
+  - bobr.cloud # TODO: fetch this from a secret
+registry: noop
+# txtOwnerId: flux-external-dns
+extraArgs:
+  - --traefik-disable-legacy
+sources:
+  - service
+  - traefik-proxy
+logLevel: info
+rbac:
+  create: true
+serviceAccount:
+  create: false
+

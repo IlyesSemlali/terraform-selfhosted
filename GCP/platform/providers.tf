@@ -48,6 +48,14 @@ provider "kubernetes" {
   ]
 }
 
+provider "helm" {
+  kubernetes {
+    host                   = "https://${module.kubernetes[0].endpoint}"
+    token                  = data.google_client_config.default.access_token
+    cluster_ca_certificate = base64decode(module.kubernetes[0].ca_certificate)
+  }
+}
+
 provider "flux" {
   kubernetes = {
     host                   = "https://${module.kubernetes[0].endpoint}"
@@ -68,7 +76,7 @@ provider "github" {
 }
 
 provider "authentik" {
-  url   = "https://auth.${var.domain}"
-  token = var.authentik_bootstrap_token
-  # insecure = false # TODO: Prod uncomment this
+  url      = "https://auth.${var.domain}"
+  token    = var.authentik_bootstrap_token
+  insecure = true # TODO: Prod uncomment this
 }
