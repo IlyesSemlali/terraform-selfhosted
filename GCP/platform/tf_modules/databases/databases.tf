@@ -26,6 +26,12 @@ resource "kubernetes_secret" "db_infos" {
     for db in var.databases : "${db.application}${db.component != "" ? "_${db.component}" : ""}" => db
   }
 
+  lifecycle {
+    replace_triggered_by = [
+      google_sql_user.db_user[each.key]
+    ]
+  }
+
   metadata {
     name      = "db-credentials-${replace(each.key, "_", "-")}"
     namespace = each.value.application

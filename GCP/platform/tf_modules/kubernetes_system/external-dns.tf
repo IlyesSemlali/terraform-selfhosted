@@ -27,3 +27,15 @@ resource "kubernetes_secret" "external_dns_sa" {
   type = "Opaque"
 }
 
+resource "helm_release" "external_dns" {
+  name      = "external-dns"
+  namespace = kubernetes_namespace.system.metadata[0].name
+
+  repository = "https://kubernetes-sigs.github.io/external-dns/"
+  chart      = "external-dns"
+
+  version = "1.x"
+  values  = [file("${path.module}/values/external-dns.yaml")]
+
+  depends_on = [kubernetes_secret.external_dns_sa]
+}

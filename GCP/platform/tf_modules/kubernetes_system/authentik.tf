@@ -1,7 +1,61 @@
-####################################
-## Wait for authentik to be ready ##
-####################################
+#################
+## HelmRelease ##
+#################
 
+resource "random_password" "authentik_secret_key" {
+  length  = 64
+  special = true
+}
+
+resource "random_password" "postgres_password" {
+  length  = 32
+  special = true
+}
+
+locals {
+  authentik_values = {
+    authentik = {
+
+      bootstrap_password = var.authentik_bootstrap_password
+      bootstrap_email    = var.authentik_bootstrap_email
+      bootstrap_token    = var.authentik_bootstrap_token
+
+      secret_key = random_password.authentik_secret_key.result
+      error_reporting = {
+        enabled = true
+      }
+      postgresql = {
+        password = random_password.postgres_password.result
+      }
+    }
+
+    postgresql = {
+      enabled = true
+      auth = {
+        password = random_password.postgres_password.result
+      }
+    }
+
+    redis = {
+      enabled = true
+    }
+  }
+}
+
+resource "helm_release" "authentik" {
+  name      = "authentik"
+  namespace = kubernetes_namespace.system.metadata[0].name
+
+  repository = "https://charts.goauthentik.io"
+  chart      = "authentik"
+
+  values = [yamlencode(local.authentik_values)]
+}
+
+# ####################################
+# ## Wait for authentik to be ready ##
+# ####################################
+#
 data "http" "authentik_health" {
   url = "https://auth.bobr.cloud/api/v3/core/system/health/"
   request_headers = {
@@ -45,7 +99,7 @@ resource "authentik_service_connection_kubernetes" "local" {
   name  = "Kubernetes"
   local = true
 
-  depends_on = [null_resource.wait_for_authentik]
+  depends_on = [helm_release.traefik]
 }
 
 resource "authentik_outpost" "forward_auth_outpost" {
@@ -58,8 +112,21 @@ resource "authentik_outpost" "forward_auth_outpost" {
     authentik_host          = format("https://auth.${var.domain}")
     authentik_host_insecure = true # TODO: prod: Set this to false
     kubernetes_disabled_components = [
-      "ingress"
+      "ingress",
+      "deployment"
     ]
+    kubernetes_json_patches = {
+      "service" = [
+        {
+          "op"   = "replace",
+          "path" = "/spec/selector",
+          "value" = {
+            "app.kubernetes.io/component" = "server"
+            "app.kubernetes.io/name"      = "authentik"
+          }
+        }
+      ]
+    }
   })
 
   service_connection = authentik_service_connection_kubernetes.local.id
