@@ -55,7 +55,7 @@ resource "helm_release" "authentik" {
 # ####################################
 # ## Wait for authentik to be ready ##
 # ####################################
-#
+
 data "http" "authentik_health" {
   url = "https://auth.bobr.cloud/api/v3/core/system/health/"
   request_headers = {
@@ -67,6 +67,7 @@ data "http" "authentik_health" {
   retry {
     attempts     = 20
     min_delay_ms = 5000
+    max_delay_ms = 5000
   }
 }
 
