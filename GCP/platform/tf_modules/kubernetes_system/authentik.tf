@@ -69,6 +69,8 @@ data "http" "authentik_health" {
     min_delay_ms = 5000
     max_delay_ms = 5000
   }
+
+  depends_on = [helm_release.authentik]
 }
 
 resource "null_resource" "wait_for_authentik" {
