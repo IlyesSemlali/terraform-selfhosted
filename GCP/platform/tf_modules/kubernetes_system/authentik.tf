@@ -29,6 +29,15 @@ locals {
       }
     }
 
+    server = {
+      env = [
+        {
+          name  = "AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST"
+          value = "true"
+        }
+      ]
+    }
+
     postgresql = {
       enabled = true
       auth = {
@@ -121,6 +130,10 @@ resource "authentik_outpost" "forward_auth_outpost" {
   service_connection = authentik_service_connection_kubernetes.local.id
 }
 
+##################
+## Applications ##
+##################
+
 resource "authentik_provider_proxy" "traefik" {
   name          = "Traefik forwardAuth"
   external_host = "https://auth.${var.domain}"
@@ -132,10 +145,6 @@ resource "authentik_provider_proxy" "traefik" {
   authorization_flow = data.authentik_flow.default_authorization_flow.id
   invalidation_flow  = data.authentik_flow.default_invalidation_flow.id
 }
-
-##################
-## Applications ##
-##################
 
 resource "authentik_application" "traefik" {
   name              = "Traefik Dashboard"
