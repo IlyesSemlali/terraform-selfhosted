@@ -50,6 +50,8 @@ resource "helm_release" "authentik" {
   chart      = "authentik"
 
   values = [yamlencode(local.authentik_values)]
+
+  depends_on = [kubernetes_namespace.system]
 }
 
 # ####################################
