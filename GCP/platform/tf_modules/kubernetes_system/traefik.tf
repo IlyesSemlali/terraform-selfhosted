@@ -6,5 +6,7 @@ resource "helm_release" "traefik" {
   chart      = "traefik"
 
   values = [file("${path.module}/values/traefik.yaml")]
+
+  depends_on = [kubernetes_namespace.system]
 }
 
