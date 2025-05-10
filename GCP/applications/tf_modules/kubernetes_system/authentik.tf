@@ -113,7 +113,7 @@ resource "authentik_service_connection_kubernetes" "local" {
   name  = "Kubernetes"
   local = true
 
-  depends_on = [helm_release.traefik]
+  depends_on = [null_resource.wait_for_authentik]
 }
 
 resource "authentik_outpost" "forward_auth_outpost" {
