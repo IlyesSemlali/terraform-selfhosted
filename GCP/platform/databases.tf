@@ -11,9 +11,5 @@ module "databases" {
     #   extensions  = ["vector"]
     # }
   ]
-
-  depends_on = [
-    module.flux
-  ]
 }
 
