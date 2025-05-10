@@ -19,6 +19,6 @@ resource "null_resource" "context_rename" {
 
   provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
-    command     = "kubectl config rename-context gke_${google_container_cluster.gke.project}_${var.zone}_${var.cluster_name} ${var.cluster_name} || true"
+    command     = "kubectl config rename-context gke_${google_container_cluster.gke.project}_${var.region}_${var.cluster_name} ${var.cluster_name} || true"
   }
 }
