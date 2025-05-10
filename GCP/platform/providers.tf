@@ -12,22 +12,6 @@ terraform {
       source  = "hashicorp/local"
       version = "2.4.0"
     }
-    flux = {
-      source  = "fluxcd/flux"
-      version = "1.3.0"
-    }
-    github = {
-      source  = "integrations/github"
-      version = "~> 6.0"
-    }
-    tls = {
-      source  = "hashicorp/tls"
-      version = "4.0.4"
-    }
-    authentik = {
-      source  = "goauthentik/authentik"
-      version = "2025.2.0"
-    }
   }
 }
 
@@ -46,37 +30,4 @@ provider "kubernetes" {
     "^autopilot\\.gke\\.io\\/.*",
     "^cloud\\.google\\.com\\/.*"
   ]
-}
-
-provider "helm" {
-  kubernetes {
-    host                   = "https://${module.kubernetes[0].endpoint}"
-    token                  = data.google_client_config.default.access_token
-    cluster_ca_certificate = base64decode(module.kubernetes[0].ca_certificate)
-  }
-}
-
-provider "flux" {
-  kubernetes = {
-    host                   = "https://${module.kubernetes[0].endpoint}"
-    token                  = data.google_client_config.default.access_token
-    cluster_ca_certificate = base64decode(module.kubernetes[0].ca_certificate)
-  }
-  git = {
-    url = "ssh://git@github.com/${var.github_owner}/${var.flux_repository}.git"
-    ssh = {
-      username    = "git"
-      private_key = module.flux.tls_private_key
-    }
-  }
-}
-
-provider "github" {
-  owner = var.github_owner
-}
-
-provider "authentik" {
-  url      = "https://auth.${var.domain}"
-  token    = var.authentik_bootstrap_token
-  insecure = true # TODO: Prod uncomment this
 }

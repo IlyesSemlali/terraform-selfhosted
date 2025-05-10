@@ -16,9 +16,3 @@ module "kubernetes" {
   min_extra_nodes_count = var.kubernetes_min_extra_nodes
   max_extra_nodes_count = var.kubernetes_max_extra_nodes
 }
-
-module "flux" {
-  source            = "./tf_modules/flux"
-  github_owner      = var.github_owner
-  github_repository = var.flux_repository
-}
