@@ -3,7 +3,7 @@
 ################
 
 module "kubernetes" {
-  source = "./tf_modules/kubernetes"
+  source = "../tf_modules/gcp/kubernetes"
   count  = var.off ? 0 : 1
 
   region = var.region
