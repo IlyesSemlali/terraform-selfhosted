@@ -41,7 +41,7 @@ data "terraform_remote_state" "kubernetes" {
   backend = "local"
 
   config = {
-    path = "../platform/terraform.tfstate"
+    path = "../02_platform/terraform.tfstate"
   }
 }
 
