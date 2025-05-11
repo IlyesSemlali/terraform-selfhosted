@@ -22,9 +22,9 @@ provider "google" {
 }
 
 provider "kubernetes" {
-  host                   = "https://${module.kubernetes[0].endpoint}"
+  host                   = "https://${module.kubernetes.endpoint}"
   token                  = data.google_client_config.default.access_token
-  cluster_ca_certificate = base64decode(module.kubernetes[0].ca_certificate)
+  cluster_ca_certificate = base64decode(module.kubernetes.ca_certificate)
 
   ignore_annotations = [
     "^autopilot\\.gke\\.io\\/.*",

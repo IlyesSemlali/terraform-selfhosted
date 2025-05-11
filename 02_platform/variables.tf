@@ -11,11 +11,6 @@ variable "owner_email" {
   # TODO: add validation
 }
 
-variable "off" {
-  description = "Determines whether to turn on or off the infrastructure, while keeping the data alive"
-  default     = false
-}
-
 variable "region" {
   description = "Belgium"
   default     = "europe-west1"
