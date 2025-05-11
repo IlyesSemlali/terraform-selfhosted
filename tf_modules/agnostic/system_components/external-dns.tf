@@ -35,7 +35,7 @@ resource "helm_release" "external_dns" {
   chart      = "external-dns"
 
   version = "1.x"
-  values  = [file("${path.module}/values/external-dns.yaml")]
+  values  = [templatefile("${path.module}/values/external-dns.yaml", { domain = var.domain })]
 
   depends_on = [kubernetes_secret.external_dns_sa]
 }

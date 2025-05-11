@@ -31,7 +31,7 @@ persistence:
 
 service:
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: "ingress.bobr.cloud." # TODO: fetch this from a secret
+    external-dns.alpha.kubernetes.io/hostname: "ingress.${domain}." # TODO: fetch this from a secret
 
 ingressRoute:
 
@@ -43,9 +43,9 @@ ingressRoute:
   dashboard:
     enabled: true
     annotations:
-      external-dns.alpha.kubernetes.io/target: ingress.bobr.cloud # TODO: fetch this from a secret
+      external-dns.alpha.kubernetes.io/target: ingress.${domain} # TODO: fetch this from a secret
 
-    matchRule: "Host(`traefik.bobr.cloud`)"
+    matchRule: "Host(`traefik.${domain}`)"
     middlewares:
       - name: redirect-to-https
       - name: ak-outpost-forwardauth
@@ -92,7 +92,7 @@ extraObjects:
     kind: IngressRoute
     metadata:
       annotations:
-        external-dns.alpha.kubernetes.io/target: ingress.bobr.cloud
+        external-dns.alpha.kubernetes.io/target: ingress.${domain}
       labels:
         app.kubernetes.io/instance: authentik-system
         app.kubernetes.io/managed-by: Flux
@@ -105,7 +105,7 @@ extraObjects:
       - websecure
       routes:
       - kind: Rule
-        match: Host(`auth.bobr.cloud`)
+        match: Host(`auth.${domain}`)
         middlewares:
         - name: redirect-to-https
         services:

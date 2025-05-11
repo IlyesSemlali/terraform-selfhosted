@@ -68,7 +68,7 @@ resource "helm_release" "authentik" {
 # ####################################
 
 data "http" "authentik_health" {
-  url = "https://auth.bobr.cloud/api/v3/core/system/health/"
+  url = "https://auth.${var.domain}/api/v3/core/system/health/"
   request_headers = {
     Authorization = "Bearer ${var.authentik_bootstrap_token}"
     Accept        = "application/json"

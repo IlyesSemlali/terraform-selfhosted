@@ -1,5 +1,5 @@
 module "databases" {
-  source = "./tf_modules/databases"
+  source = "../tf_modules/gcp/postgresql"
 
   databases = [
     # the vector extension isn't the one

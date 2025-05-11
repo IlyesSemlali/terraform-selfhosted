@@ -5,7 +5,7 @@ resource "helm_release" "traefik" {
   repository = "https://traefik.github.io/charts"
   chart      = "traefik"
 
-  values = [file("${path.module}/values/traefik.yaml")]
+  values = [templatefile("${path.module}/values/traefik.yaml", { domain = var.domain })]
 
   depends_on = [kubernetes_namespace.system]
 }

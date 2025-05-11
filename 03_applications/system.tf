@@ -3,7 +3,7 @@
 #####################
 
 module "system" {
-  source = "./tf_modules/kubernetes_system"
+  source = "../tf_modules/agnostic/system_components"
 
   project = var.project
   domain  = var.domain
