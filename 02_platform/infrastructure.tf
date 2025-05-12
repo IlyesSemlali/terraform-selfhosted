@@ -15,3 +15,24 @@ module "kubernetes" {
   min_extra_nodes_count = var.kubernetes_min_extra_nodes
   max_extra_nodes_count = var.kubernetes_max_extra_nodes
 }
+
+data "terraform_remote_state" "network" {
+  backend = "local"
+
+  config = {
+    path = "../01_foundation/terraform.tfstate"
+  }
+}
+
+module "postgresql" {
+  source = "../tf_modules/gcp/postgresql-instance"
+
+  region = var.region
+  zone   = var.zone
+
+  # TODO: use this once every resource is moved to
+  #       the correct VPC
+  #
+  # network = data.terraform_remote_state.network
+  network = "default"
+}

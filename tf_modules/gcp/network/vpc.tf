@@ -14,3 +14,7 @@ resource "google_compute_subnetwork" "primary_subnet" {
 output "self_link" {
   value = google_compute_network.primary_network.self_link
 }
+
+output "name" {
+  value = google_compute_network.primary_network.name
+}
