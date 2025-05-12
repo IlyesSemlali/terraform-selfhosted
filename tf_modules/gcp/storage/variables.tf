@@ -22,8 +22,3 @@ variable "rwo_storage" {
 
   default = []
 }
-
-variable "network" {
-  description = "VPC name in which the private IP will be created"
-  type        = string
-}

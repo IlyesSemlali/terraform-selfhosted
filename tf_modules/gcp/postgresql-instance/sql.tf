@@ -29,14 +29,9 @@ resource "google_sql_database_instance" "postgresql" {
       private_network                               = data.google_compute_network.primary_network.self_link
       enable_private_path_for_google_cloud_services = true
     }
-
-    # TODO: enable pgvector extension using SQL statement
-    # database_flags {
-    #   name  = "cloudsql.extensions"
-    #   value = "pgvector"
-    # }
   }
 
+  # TODO: set this based on whether it's a production instance and it's not in pre-delete stage
   deletion_protection = false
 
   depends_on = [google_service_networking_connection.private_vpc_connection]
