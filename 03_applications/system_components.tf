@@ -14,7 +14,7 @@ module "system" {
 }
 
 module "traefik_storage" {
-  source = "../tf_modules/gcp/storage"
+  source = "../tf_modules/gcp/storage_attachement"
 
   application_name      = "traefik"
   application_namespace = "system"
