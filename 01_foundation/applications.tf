@@ -28,6 +28,11 @@ locals {
           storage_name = "library"
           size         = 10
           access_mode  = "ReadWriteOnce"
+        },
+        {
+          storage_name = "ml"
+          size         = 10
+          access_mode  = "ReadWriteOnce"
         }
       ]
     }
