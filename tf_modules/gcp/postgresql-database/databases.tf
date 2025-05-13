@@ -39,7 +39,40 @@ resource "kubernetes_secret" "db_infos" {
   data = {
     username = var.name
     password = random_password.db.result
-    host     = data.google_sql_database_instance.cloudsql.private_ip_address
+    host     = "postgresql-${var.name}"
+  }
+}
+
+resource "kubernetes_service" "postgresql" {
+  metadata {
+    name      = "postgresql-${var.name}"
+    namespace = var.application_namespace
+  }
+
+  spec {
+    cluster_ip = "None"
+
+    port {
+      name        = "postgresql"
+      port        = 5432
+      target_port = 5432
+    }
+  }
+}
+
+resource "kubernetes_endpoints" "postgresql" {
+  metadata {
+    name      = "postgresql-${var.name}"
+    namespace = var.application_namespace
+  }
+
+  subset {
+    address {
+      ip = data.google_sql_database_instance.cloudsql.private_ip_address
+    }
+    port {
+      port = 5432
+    }
   }
 }
 
