@@ -12,3 +12,14 @@ module "system" {
   authentik_bootstrap_password = var.authentik_bootstrap_password
   authentik_bootstrap_token    = var.authentik_bootstrap_token
 }
+
+module "traefik_storage" {
+  source = "../tf_modules/gcp/storage"
+
+  application_name      = "traefik"
+  application_namespace = "system"
+  storage_name          = "certificates"
+  size                  = 1
+
+  depends_on = [kubernetes_namespace.application]
+}
