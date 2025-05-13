@@ -1,5 +1,6 @@
 locals {
   gcp_service_list = [
+    "compute.googleapis.com",
     "servicenetworking.googleapis.com",
   ]
 }
