@@ -17,7 +17,7 @@ locals {
 }
 
 module "storage" {
-  source   = "../tf_modules/gcp/storage_attachement"
+  source   = "../tf_modules/gcp/storage"
   for_each = { for storage in local.storage_list : "${storage.application_name}-${storage.storage_name}" => storage }
 
   application_name      = each.value.application_name
@@ -25,6 +25,13 @@ module "storage" {
   storage_name          = each.value.storage_name
   access_mode           = each.value.access_mode
   size                  = each.value.size
+}
 
-  depends_on = [kubernetes_namespace.application]
+module "traefik_storage" {
+  source = "../tf_modules/gcp/storage"
+
+  application_name      = "traefik"
+  application_namespace = "system"
+  storage_name          = "certificates"
+  size                  = 1
 }

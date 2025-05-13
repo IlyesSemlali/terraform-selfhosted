@@ -37,7 +37,7 @@ provider "google" {
   zone    = var.zone
 }
 
-data "terraform_remote_state" "kubernetes" {
+data "terraform_remote_state" "platform" {
   backend = "local"
 
   config = {
@@ -46,9 +46,9 @@ data "terraform_remote_state" "kubernetes" {
 }
 
 provider "kubernetes" {
-  host                   = data.terraform_remote_state.kubernetes.outputs.kubernetes_host
+  host                   = data.terraform_remote_state.platform.outputs.kubernetes_host
   token                  = data.google_client_config.default.access_token
-  cluster_ca_certificate = data.terraform_remote_state.kubernetes.outputs.kubernetes_ca_certificate
+  cluster_ca_certificate = data.terraform_remote_state.platform.outputs.kubernetes_ca_certificate
 
   ignore_annotations = [
     "^autopilot\\.gke\\.io\\/.*",
@@ -58,17 +58,17 @@ provider "kubernetes" {
 
 provider "helm" {
   kubernetes {
-    host                   = data.terraform_remote_state.kubernetes.outputs.kubernetes_host
+    host                   = data.terraform_remote_state.platform.outputs.kubernetes_host
     token                  = data.google_client_config.default.access_token
-    cluster_ca_certificate = data.terraform_remote_state.kubernetes.outputs.kubernetes_ca_certificate
+    cluster_ca_certificate = data.terraform_remote_state.platform.outputs.kubernetes_ca_certificate
   }
 }
 
 provider "flux" {
   kubernetes = {
-    host                   = data.terraform_remote_state.kubernetes.outputs.kubernetes_host
+    host                   = data.terraform_remote_state.platform.outputs.kubernetes_host
     token                  = data.google_client_config.default.access_token
-    cluster_ca_certificate = data.terraform_remote_state.kubernetes.outputs.kubernetes_ca_certificate
+    cluster_ca_certificate = data.terraform_remote_state.platform.outputs.kubernetes_ca_certificate
   }
   git = {
     url = "ssh://git@github.com/${var.github_owner}/${var.flux_repository}.git"
