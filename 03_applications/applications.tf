@@ -23,9 +23,13 @@ locals {
           size       = 10
         }
       ]
-      storage = [{
-
-      }]
+      storage = [
+        {
+          storage_name = "library"
+          size         = 10
+          access_mode  = "ReadWriteOnce"
+        }
+      ]
     }
 
   }

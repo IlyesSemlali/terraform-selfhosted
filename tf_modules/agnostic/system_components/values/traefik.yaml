@@ -8,7 +8,7 @@ additionalArguments:
   - --certificatesresolvers.letsencrypt=true
   - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
   - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
-  - --certificatesresolvers.letsencrypt.acme.storage=/data/acme.json
+  - --certificatesresolvers.letsencrypt.acme.storage=/certificates/acme.json
 
 # Since we're using let's encrypt for certificate management
 # We can't have two instances of traefik running at the same time
@@ -23,11 +23,18 @@ ports:
   websecure:
     nodePort: 32443
 
-# Create a volume to store certificates
 persistence:
-  enabled: true
-  accessMode: ReadWriteOnce
-  size: 1Gi
+  enabled: false
+
+deployment:
+  additionalVolumes:
+  - name: certificates
+    persistentVolumeClaim:
+      claimName: traefik-certificates
+
+additionalVolumeMounts:
+- name: certificates
+  mountPath: /certificates
 
 service:
   annotations:
@@ -63,7 +70,7 @@ ingressRoute:
 #     acme:
 #       httpChallenge:
 #         entryPoint: web
-#       storage: /data/acme.json
+#       storage: /certificates/acme.json
 
 # On first Flux Bootstrap, CRDs don't exist, but traefik's
 # Helm chart is thoughtfully designed to allow us to create

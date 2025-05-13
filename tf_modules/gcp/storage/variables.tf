@@ -1,3 +1,18 @@
+variable "application_name" {
+  description = "Application name that will be used as a prefix"
+  type        = string
+}
+
+variable "application_namespace" {
+  description = "Application name that will be used as a prefix"
+  type        = string
+}
+
+variable "storage_name" {
+  description = "Storage name"
+  type        = string
+}
+
 variable "region" {
   description = "Belgium"
   default     = "europe-west1"
@@ -8,17 +23,13 @@ variable "zone" {
   default     = "europe-west1-d"
 }
 
-variable "rwo_storage" {
-  description = "List of RWO storage definitions"
-  type = list(
-    object(
-      {
-        application = string,
-        component   = string,
-        size        = number
-      }
-    )
-  )
+variable "size" {
+  description = "Storage disk size"
+  type        = number
+}
 
-  default = []
+variable "access_mode" {
+  description = "Persistent volume access mode"
+  type        = string
+  default     = "ReadWriteOnce"
 }
