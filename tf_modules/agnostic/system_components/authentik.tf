@@ -3,8 +3,9 @@
 #################
 
 resource "random_password" "authentik_secret_key" {
-  length  = 64
-  special = true
+  length           = 64
+  special          = true
+  override_special = "!#$%&*-_=+:?"
 }
 
 resource "random_password" "postgres_password" {
