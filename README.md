@@ -19,6 +19,7 @@ To keep ressources usage as low as possible, this cluster is designed to host ap
 
 ### Google Cloud
 
+<!--TODO: Expand on initial setup-->
 - Install the google-cloud-sdk
 - Authenticate to googl: `gcloud auth login`
 - Install the kubectl component with `gcloud component install kubectl`

@@ -1,5 +1,3 @@
-data "google_client_config" "default" {}
-
 terraform {
   required_version = ">= 0.13"
 
