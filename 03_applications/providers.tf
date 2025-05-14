@@ -1,30 +1,38 @@
 terraform {
-  required_version = ">= 0.13"
+  required_version = ">= 1.8.5"
 
   required_providers {
-    google = {
-      source  = "hashicorp/google"
-      version = "~> 5.45"
-    }
-    local = {
-      source  = "hashicorp/local"
-      version = "2.4.0"
+    authentik = {
+      source  = "goauthentik/authentik"
+      version = "~> 2025.2"
     }
     flux = {
       source  = "fluxcd/flux"
-      version = "1.3.0"
+      version = "~> 1.3"
     }
     github = {
       source  = "integrations/github"
       version = "~> 6.0"
     }
+    google = {
+      source  = "hashicorp/google"
+      version = "~> 5.45"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.17"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.36"
+    }
+    local = {
+      source  = "hashicorp/local"
+      version = "~> 2.4"
+    }
     tls = {
       source  = "hashicorp/tls"
-      version = "4.0.4"
-    }
-    authentik = {
-      source  = "goauthentik/authentik"
-      version = "2025.2.0"
+      version = "~> 4.0"
     }
   }
 }
