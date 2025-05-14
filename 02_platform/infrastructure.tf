@@ -1,12 +1,7 @@
-################
-## Kubernetes ##
-################
-
 module "kubernetes" {
   source = "../tf_modules/gcp/kubernetes"
 
   region = var.region
-  zone   = var.zone
 
   cluster_name          = var.kubernetes_cluster_name
   deletion_protection   = var.deletion_protection
@@ -20,11 +15,4 @@ module "postgresql" {
   source = "../tf_modules/gcp/postgresql-instance"
 
   region = var.region
-  zone   = var.zone
-
-  # TODO: use this once every resource is moved to
-  #       the correct VPC
-  #
-  # network = data.terraform_remote_state.foundation.network
-  network = "default"
 }

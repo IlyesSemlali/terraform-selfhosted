@@ -1,7 +1,3 @@
-###########
-# Storage #
-###########
-
 locals {
   storage_name = "${var.application_name}-${var.storage_name}"
 }
