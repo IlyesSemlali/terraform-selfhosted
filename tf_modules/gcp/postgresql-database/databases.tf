@@ -1,6 +1,6 @@
-locals {
-  credentials_secret_name = "db-credentials-${replace(var.name, "_", "-")}"
-}
+# locals {
+#   credentials_secret_name = "db-credentials-${replace(var.name, "_", "-")}"
+# }
 
 data "google_sql_database_instance" "cloudsql" {
   name = "postgresql"

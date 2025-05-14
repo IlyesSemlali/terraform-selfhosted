@@ -13,16 +13,6 @@ variable "storage_name" {
   type        = string
 }
 
-variable "region" {
-  description = "Belgium"
-  default     = "europe-west1"
-}
-
-variable "zone" {
-  description = "Google Cloud default compute zone"
-  default     = "europe-west1-d"
-}
-
 variable "size" {
   description = "Storage disk size"
   type        = number

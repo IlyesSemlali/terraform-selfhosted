@@ -6,8 +6,6 @@ locals {
           for db, db_config in pg_databases :
           {
             name                  = db_config.name
-            size                  = db_config.size
-            extensions            = db_config.extensions
             application_namespace = app
           }
         ] if config_key == "pg_databases"
@@ -22,8 +20,6 @@ module "databases" {
 
   name                  = each.value.name
   application_namespace = each.value.application_namespace
-  extensions            = each.value.extensions
-  size                  = each.value.size
 
   depends_on = [kubernetes_namespace.application]
 }
