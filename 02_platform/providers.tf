@@ -1,5 +1,3 @@
-data "google_client_config" "default" {}
-
 terraform {
   required_version = ">= 0.13"
 
@@ -20,6 +18,8 @@ provider "google" {
   region  = var.region
   zone    = var.zone
 }
+
+data "google_client_config" "default" {}
 
 provider "kubernetes" {
   host                   = "https://${module.kubernetes.endpoint}"

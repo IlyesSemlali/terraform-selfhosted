@@ -1,5 +1,3 @@
-data "google_client_config" "default" {}
-
 terraform {
   required_version = ">= 0.13"
 
@@ -44,6 +42,8 @@ data "terraform_remote_state" "platform" {
     path = "../02_platform/terraform.tfstate"
   }
 }
+
+data "google_client_config" "default" {}
 
 provider "kubernetes" {
   host                   = data.terraform_remote_state.platform.outputs.kubernetes_host
