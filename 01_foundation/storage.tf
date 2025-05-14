@@ -8,7 +8,6 @@ locals {
             application_name = app
             storage_name     = storage_config.storage_name
             size             = storage_config.size
-            access_mode      = storage_config.access_mode
           } if config_key == "storage"
         ]
       ]
