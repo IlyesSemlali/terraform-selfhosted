@@ -8,8 +8,3 @@ output "kubernetes_ca_certificate" {
   value       = base64decode(module.kubernetes.ca_certificate)
 
 }
-
-output "postgresql_host" {
-  description = "PostgreSQL host"
-  value       = module.postgresql.host
-}
