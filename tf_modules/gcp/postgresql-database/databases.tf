@@ -37,9 +37,10 @@ resource "kubernetes_secret" "db_infos" {
   }
 
   data = {
-    username = var.name
-    password = random_password.db.result
-    host     = "postgresql-${var.name}"
+    database = google_sql_database.app_db.name
+    username = google_sql_user.db.name
+    password = google_sql_user.db.password
+    host     = kubernetes_service.postgresql.metadata[0].name
   }
 }
 
@@ -62,7 +63,7 @@ resource "kubernetes_service" "postgresql" {
 
 resource "kubernetes_endpoints" "postgresql" {
   metadata {
-    name      = "postgresql-${var.name}"
+    name      = kubernetes_service.postgresql.metadata[0].name
     namespace = var.application_namespace
   }
 

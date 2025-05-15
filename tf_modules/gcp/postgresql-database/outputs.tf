@@ -1,3 +1,7 @@
+output "pg_database_name" {
+  value = google_sql_database.app_db.name
+}
+
 output "pg_host" {
   value = kubernetes_service.postgresql.metadata[0].name
 }
