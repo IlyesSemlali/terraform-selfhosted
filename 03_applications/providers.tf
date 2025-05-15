@@ -43,14 +43,6 @@ provider "google" {
   zone    = var.zone
 }
 
-data "terraform_remote_state" "platform" {
-  backend = "local"
-
-  config = {
-    path = "../02_platform/terraform.tfstate"
-  }
-}
-
 data "google_client_config" "default" {}
 
 provider "kubernetes" {
