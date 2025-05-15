@@ -33,6 +33,13 @@ locals {
     }
 
     server = {
+      readinessProbe = {
+        failureThreshold    = 3
+        initialDelaySeconds = 10
+        periodSeconds       = 5
+        successThreshold    = 3
+      }
+
       env = [
         {
           name  = "AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST"
@@ -61,33 +68,6 @@ resource "helm_release" "authentik" {
   values = [yamlencode(local.authentik_values)]
 }
 
-# ####################################
-# ## Wait for authentik to be ready ##
-# ####################################
-
-data "http" "authentik_health" {
-  url = "https://auth.${var.domain}/api/v3/core/system/health/"
-  request_headers = {
-    Authorization = "Bearer ${var.authentik_bootstrap_token}"
-    Accept        = "application/json"
-  }
-
-  # Wait up to 5 minutes for the API to respond with 200
-  retry {
-    attempts     = 20
-    min_delay_ms = 5000
-    max_delay_ms = 5000
-  }
-
-  depends_on = [helm_release.authentik]
-}
-
-resource "null_resource" "wait_for_authentik" {
-  triggers = {
-    health_status = data.http.authentik_health.status_code
-  }
-}
-
 ####################################
 ## Common Authentik Configuration ##
 ####################################
@@ -98,20 +78,20 @@ resource "null_resource" "wait_for_authentik" {
 data "authentik_flow" "default_invalidation_flow" {
   slug = "default-provider-invalidation-flow"
 
-  depends_on = [null_resource.wait_for_authentik]
+  depends_on = [helm_release.authentik]
 }
 
 data "authentik_flow" "default_authorization_flow" {
   slug = "default-provider-authorization-implicit-consent"
 
-  depends_on = [null_resource.wait_for_authentik]
+  depends_on = [helm_release.authentik]
 }
 
 resource "authentik_service_connection_kubernetes" "local" {
   name  = "Kubernetes"
   local = true
 
-  depends_on = [null_resource.wait_for_authentik]
+  depends_on = [helm_release.authentik]
 }
 
 resource "authentik_outpost" "forward_auth_outpost" {
