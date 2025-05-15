@@ -26,7 +26,9 @@ locals {
         enabled = true
       }
       postgresql = {
-        password = random_password.postgres_password.result
+        host     = var.authentik_pg_host
+        user     = var.authentik_pg_user
+        password = var.authentik_pg_password
       }
     }
 
@@ -40,10 +42,7 @@ locals {
     }
 
     postgresql = {
-      enabled = true
-      auth = {
-        password = random_password.postgres_password.result
-      }
+      enabled = false
     }
 
     redis = {
@@ -54,14 +53,12 @@ locals {
 
 resource "helm_release" "authentik" {
   name      = "authentik"
-  namespace = kubernetes_namespace.system.metadata[0].name
+  namespace = var.kubernetes_namespace
 
   repository = "https://charts.goauthentik.io"
   chart      = "authentik"
 
   values = [yamlencode(local.authentik_values)]
-
-  depends_on = [kubernetes_namespace.system]
 }
 
 # ####################################

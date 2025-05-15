@@ -17,7 +17,7 @@ resource "google_service_account_key" "external_dns_key" {
 resource "kubernetes_secret" "external_dns_sa" {
   metadata {
     name      = "external-dns-gcp-sa"
-    namespace = "system"
+    namespace = var.kubernetes_namespace
   }
 
   data = {
@@ -29,7 +29,7 @@ resource "kubernetes_secret" "external_dns_sa" {
 
 resource "helm_release" "external_dns" {
   name      = "external-dns"
-  namespace = kubernetes_namespace.system.metadata[0].name
+  namespace = var.kubernetes_namespace
 
   repository = "https://kubernetes-sigs.github.io/external-dns/"
   chart      = "external-dns"
