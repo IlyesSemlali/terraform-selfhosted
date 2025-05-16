@@ -1,3 +1,15 @@
+variable "domain" {
+  description = "DNS Domain "
+  type        = string
+}
+
+
+variable "owner_email" {
+  description = "Platform owner's email address"
+  type        = string
+  # TODO: add validation
+}
+
 variable "project" {
   description = "Project name"
   type        = string
@@ -57,3 +69,16 @@ variable "kubernetes_max_extra_nodes" {
   default     = 1
 }
 
+# TODO: Generate this if not needed
+variable "authentik_bootstrap_password" {
+  description = "Authentik akadmin password"
+  type        = string
+  sensitive   = true
+}
+
+# TODO: Generate this if not needed
+variable "authentik_bootstrap_token" {
+  description = "Authentik akadmin token"
+  type        = string
+  sensitive   = true
+}
