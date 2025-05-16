@@ -9,12 +9,6 @@ variable "domain" {
 }
 
 
-variable "owner_email" {
-  description = "Platform owner's email address"
-  type        = string
-  # TODO: add validation
-}
-
 variable "region" {
   description = "Belgium"
   type        = string
@@ -35,18 +29,4 @@ variable "flux_repository" {
 variable "github_owner" {
   description = "Github user or organization owning the flux repositories"
   type        = string
-}
-
-# TODO: Generate this if not needed
-variable "authentik_bootstrap_password" {
-  description = "Authentik akadmin password"
-  type        = string
-  sensitive   = true
-}
-
-# TODO: Generate this if not needed
-variable "authentik_bootstrap_token" {
-  description = "Authentik akadmin token"
-  type        = string
-  sensitive   = true
 }

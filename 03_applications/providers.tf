@@ -2,10 +2,6 @@ terraform {
   required_version = ">= 1.8.5"
 
   required_providers {
-    authentik = {
-      source  = "goauthentik/authentik"
-      version = "~> 2025.2"
-    }
     flux = {
       source  = "fluxcd/flux"
       version = "~> 1.3"
@@ -81,10 +77,4 @@ provider "flux" {
 
 provider "github" {
   owner = var.github_owner
-}
-
-provider "authentik" {
-  url      = "https://auth.${var.domain}"
-  token    = var.authentik_bootstrap_token
-  insecure = true # TODO: Prod uncomment this
 }
