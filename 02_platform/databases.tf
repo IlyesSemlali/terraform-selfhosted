@@ -14,6 +14,18 @@ locals {
   )
 }
 
+module "postgresql" {
+  source = "../tf_modules/gcp/postgresql-instance"
+
+  region = var.region
+}
+
+resource "time_sleep" "wait_for_postgresql" {
+  depends_on = [module.postgresql]
+
+  destroy_duration = "90s"
+}
+
 module "databases" {
   source   = "../tf_modules/gcp/postgresql-database"
   for_each = { for db in local.db_list : db.name => db }
@@ -23,6 +35,6 @@ module "databases" {
 
   depends_on = [
     kubernetes_namespace.application,
-    module.postgresql
+    time_sleep.wait_for_postgresql
   ]
 }
