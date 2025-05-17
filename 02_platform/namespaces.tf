@@ -4,4 +4,6 @@ resource "kubernetes_namespace" "application" {
   metadata {
     name = each.key
   }
+
+  depends_on = [module.kubernetes]
 }

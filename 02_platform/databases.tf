@@ -21,5 +21,8 @@ module "databases" {
   name                  = each.value.name
   application_namespace = each.value.application_namespace
 
-  depends_on = [kubernetes_namespace.application]
+  depends_on = [
+    kubernetes_namespace.application,
+    module.postgresql
+  ]
 }
