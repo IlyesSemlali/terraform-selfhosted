@@ -34,7 +34,6 @@ module "system" {
   source = "../tf_modules/agnostic/system_components"
 
   project = var.project
-  domain  = var.domain
 
   kubernetes_namespace = kubernetes_namespace.system.metadata[0].name
 

@@ -30,3 +30,10 @@ variable "github_owner" {
   description = "Github user or organization owning the flux repositories"
   type        = string
 }
+
+# TODO: Generate this if not needed
+variable "authentik_bootstrap_token" {
+  description = "Authentik akadmin token"
+  type        = string
+  sensitive   = true
+}

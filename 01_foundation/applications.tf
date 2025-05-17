@@ -35,6 +35,10 @@ locals {
           access_mode  = "ReadWriteOnce"
         }
       ]
+      authentication = {
+        name = "immich"
+        type = "oidc",
+      }
     }
 
   }
