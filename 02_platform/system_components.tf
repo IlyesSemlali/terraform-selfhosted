@@ -8,6 +8,8 @@ resource "kubernetes_namespace" "system" {
   metadata {
     name = "system"
   }
+
+  depends_on = [module.kubernetes]
 }
 
 module "traefik_storage" {
