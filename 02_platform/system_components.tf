@@ -27,7 +27,10 @@ module "authentik_database" {
   name                  = "authentik"
   application_namespace = "system"
 
-  depends_on = [kubernetes_namespace.system]
+  depends_on = [
+    kubernetes_namespace.system,
+    module.postgresql
+  ]
 }
 
 module "system" {
