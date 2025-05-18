@@ -20,6 +20,18 @@ data "authentik_flow" "default_authorization_flow" {
   slug = "default-provider-authorization-implicit-consent"
 }
 
+data "authentik_property_mapping_provider_scope" "scopes" {
+  managed_list = [
+    "goauthentik.io/providers/oauth2/scope-profile",
+    "goauthentik.io/providers/oauth2/scope-email",
+    "goauthentik.io/providers/oauth2/scope-openid"
+  ]
+}
+
+data "authentik_certificate_key_pair" "generated" {
+  name = "authentik Self-signed Certificate"
+}
+
 # TODO: import authentik integration to avoid duplicate:
 # https://developer.hashicorp.com/terraform/language/import
 resource "authentik_service_connection_kubernetes" "local" {
@@ -61,14 +73,19 @@ resource "authentik_provider_oauth2" "app" {
   name        = each.value.name
   client_id   = each.key
   client_type = "confidential"
+  signing_key = data.authentik_certificate_key_pair.generated.id
+
   allowed_redirect_uris = [
     for redirect_uri in split(";", each.value.redirect_uris) : {
-      matching_mode = "strict",
+      matching_mode = "regex",
       url           = redirect_uri,
     }
   ]
+
   authorization_flow = data.authentik_flow.default_authorization_flow.id
   invalidation_flow  = data.authentik_flow.default_invalidation_flow.id
+
+  property_mappings = data.authentik_property_mapping_provider_scope.scopes.ids
 }
 
 resource "authentik_application" "proxy" {

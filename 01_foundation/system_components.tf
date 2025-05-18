@@ -16,6 +16,8 @@ locals {
         description = "Traefik Ingress Controller Dashboord"
         group       = "Admin Panel"
       }
+      # TODO: move traefik helm release here
+      # TODO: also add all other system components
     }
   }
 }

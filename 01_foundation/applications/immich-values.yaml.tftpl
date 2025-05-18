@@ -1,0 +1,103 @@
+# vim: filetype=yaml
+env:
+  - name: IMMICH_CONFIG_FILE
+    value: /config/immich-config.yaml
+
+  - name: DB_VECTOR_EXTENSION
+    value: pgvector
+
+  - name: DB_HOSTNAME
+    valueFrom:
+      secretKeyRef:
+        name: db-credentials-immich
+        key: host
+
+  - name: DB_DATABASE_NAME
+    valueFrom:
+      secretKeyRef:
+        name: db-credentials-immich
+        key: database
+
+  - name: DB_USERNAME
+    valueFrom:
+      secretKeyRef:
+        name: db-credentials-immich
+        key: username
+
+  - name: DB_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: db-credentials-immich
+        key: password
+
+  - name: REDIS_HOSTNAME
+    value: immich-redis-master
+
+immich:
+  metrics:
+    enabled: false
+  persistence:
+    library:
+      # Automatically creating the library volume is not supported by this chart
+      # You have to specify an existing PVC to use
+      existingClaim:
+        immich-library
+  # configuration is immich-config.json converted to yaml
+  # ref: https://immich.app/docs/install/config-file/
+  #
+  configuration:
+    passwordLogin:
+      enabled: false
+
+    oauth:
+      enabled: true
+      autoLaunch: true
+      autoRegister: true
+      buttonText: "Login"
+
+      clientId: "immich"
+      clientSecret: ${oauth_client_secret}
+      issuerUrl: ${oauth_issuer_url}
+      scope: ${oauth_scopes}
+
+      # signingAlgorithm: "RS256",
+      # profileSigningAlgorithm: "none",
+
+      # defaultStorageQuota: 0,
+      # storageLabelClaim: "preferred_username",
+      # storageQuotaClaim: "immich_quota"
+
+    # trash:
+    #   enabled: false
+    #   days: 30
+    # storageTemplate:
+    #   enabled: true
+    #   template: "{{y}}/{{y}}-{{MM}}-{{dd}}/{{filename}}"
+postgresql:
+  enabled: false
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: false
+
+# Immich components
+server:
+  enabled: true
+  ingress:
+    main:
+      enabled: false
+
+machine-learning:
+  enabled: false
+  image:
+    repository: ghcr.io/immich-app/immich-machine-learning
+    pullPolicy: IfNotPresent
+  env:
+    TRANSFORMERS_CACHE: /cache
+    DB_VECTOR_EXTENSION: pgvector
+  persistence:
+    cache:
+      enabled: true
+      existingClaim:
+        immich-ml

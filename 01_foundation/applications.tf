@@ -43,9 +43,15 @@ locals {
         group       = "Private Cloud"
         redirect_uris = join(";", [
           "app.immich:///oauth-callback",
-          "http://immich.${var.domain}/auth/login",
-          "http://immich.${var.domain}/user-settings"
+          "https://immich.${var.domain}/auth/login",
+          "https://immich.${var.domain}/user-settings"
         ])
+      }
+      helm_release = {
+        values     = file("applications/immich-values.yaml.tftpl")
+        repository = "https://immich-app.github.io/immich-charts"
+        chart      = "immich"
+        version    = "0.9.2"
       }
     }
 
