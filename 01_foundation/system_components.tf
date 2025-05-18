@@ -10,8 +10,9 @@ locals {
         },
       ]
       authentication = {
-        name        = "Traefik"
-        type        = "proxy"
+        name = "Traefik"
+        type = "proxy"
+
         description = "Traefik Ingress Controller Dashboord"
         group       = "Admin Panel"
       }

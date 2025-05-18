@@ -7,9 +7,9 @@ locals {
     for app, auth in local.authentications : app => auth if auth.type == "proxy"
   }
 
-  # oidc_auths = concat(
-  #   [for auth in local.authentications : auth if auth.type == "oidc"]
-  # )
+  oauth2_auths = {
+    for app, auth in local.authentications : app => auth if auth.type == "oauth2"
+  }
 }
 
 data "authentik_flow" "default_invalidation_flow" {
@@ -30,7 +30,7 @@ resource "authentik_service_connection_kubernetes" "local" {
 resource "authentik_outpost" "forward_auth_outpost" {
   name = "forwardAuth"
   protocol_providers = [
-    authentik_provider_proxy.traefik.id
+    for app, auth_config in local.proxy_auths : authentik_provider_proxy.app[app].id
   ]
 
   config = jsonencode({
@@ -41,9 +41,10 @@ resource "authentik_outpost" "forward_auth_outpost" {
   service_connection = authentik_service_connection_kubernetes.local.id
 }
 
+resource "authentik_provider_proxy" "app" {
+  for_each = local.proxy_auths
 
-resource "authentik_provider_proxy" "traefik" {
-  name          = "Traefik forwardAuth"
+  name          = "${each.value.name} forwardAuth"
   external_host = "https://auth.${var.domain}"
 
   mode                  = "forward_domain"
@@ -54,13 +55,39 @@ resource "authentik_provider_proxy" "traefik" {
   invalidation_flow  = data.authentik_flow.default_invalidation_flow.id
 }
 
-resource "authentik_application" "proxy_auth" {
-  # for_each = { for app in local.proxy_auths : app.key => app }
+resource "authentik_provider_oauth2" "app" {
+  for_each = local.oauth2_auths
+
+  name        = each.value.name
+  client_id   = each.key
+  client_type = "confidential"
+  allowed_redirect_uris = [
+    for redirect_uri in split(";", each.value.redirect_uris) : {
+      matching_mode = "strict",
+      url           = redirect_uri,
+    }
+  ]
+  authorization_flow = data.authentik_flow.default_authorization_flow.id
+  invalidation_flow  = data.authentik_flow.default_invalidation_flow.id
+}
+
+resource "authentik_application" "proxy" {
   for_each = local.proxy_auths
 
+  protocol_provider = authentik_provider_proxy.app[each.key].id
   name              = each.value.name
   slug              = each.key
-  protocol_provider = authentik_provider_proxy.traefik.id
+  meta_launch_url   = "https://${each.key}.${var.domain}/"
+  meta_description  = each.value.description
+  group             = each.value.group
+}
+
+resource "authentik_application" "oauth2" {
+  for_each = local.oauth2_auths
+
+  protocol_provider = authentik_provider_oauth2.app[each.key].id
+  name              = each.value.name
+  slug              = each.key
   meta_launch_url   = "https://${each.key}.${var.domain}/"
   meta_description  = each.value.description
   group             = each.value.group

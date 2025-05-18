@@ -36,8 +36,16 @@ locals {
         }
       ]
       authentication = {
-        name = "immich"
-        type = "oidc",
+        name = "Immich"
+        type = "oauth2",
+
+        description = "Photo library"
+        group       = "Private Cloud"
+        redirect_uris = join(";", [
+          "app.immich:///oauth-callback",
+          "http://immich.${var.domain}/auth/login",
+          "http://immich.${var.domain}/user-settings"
+        ])
       }
     }
 
