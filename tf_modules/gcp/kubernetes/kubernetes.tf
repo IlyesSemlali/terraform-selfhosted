@@ -8,20 +8,46 @@ resource "google_container_cluster" "gke" {
   location            = var.region
   deletion_protection = var.deletion_protection
 
+  maintenance_policy {
+    daily_maintenance_window {
+      start_time = "03:00"
+    }
+  }
+
+  node_locations = [
+    var.zone
+  ]
+
+  node_config {
+    machine_type = var.permanent_nodes_type
+  }
+
   remove_default_node_pool = true
   initial_node_count       = 1
+
+  timeouts {
+    create = "15m"
+    update = "40m"
+  }
 }
 
 resource "google_container_node_pool" "permanent" {
   name     = "${var.cluster_name}-permanent-node-pool"
-  location = var.zone
+  location = var.region
   cluster  = google_container_cluster.gke.name
+
+  # Since we're using zonal disks, it's crucial that nodes
+  # run on that specified zone
+  node_locations = [
+    var.zone
+  ]
 
   node_config {
     preemptible  = true
     machine_type = var.permanent_nodes_type
 
-    # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
+    # Google recommends custom service accounts that have
+    # cloud-platform scope and permissions granted via IAM Roles.
     service_account = google_service_account.gke_sa.email
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
@@ -42,11 +68,18 @@ resource "google_container_node_pool" "extra" {
   location = var.zone
   cluster  = google_container_cluster.gke.name
 
+  # Since we're using zonal disks, it's crucial that nodes
+  # run on that specified zone
+  node_locations = [
+    var.zone
+  ]
+
   node_config {
     preemptible  = true
     machine_type = var.extra_nodes_type
 
-    # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
+    # Google recommends custom service accounts that have
+    # cloud-platform scope and permissions granted via IAM Roles.
     service_account = google_service_account.gke_sa.email
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
