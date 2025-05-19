@@ -26,5 +26,8 @@ module "storage" {
   access_mode           = each.value.access_mode
   size                  = each.value.size
 
-  depends_on = [kubernetes_namespace.application]
+  depends_on = [
+    module.kubernetes,
+    kubernetes_namespace.application,
+  ]
 }
