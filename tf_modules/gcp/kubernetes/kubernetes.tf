@@ -14,7 +14,7 @@ resource "google_container_cluster" "gke" {
 
 resource "google_container_node_pool" "permanent" {
   name     = "${var.cluster_name}-permanent-node-pool"
-  location = var.region
+  location = var.zone
   cluster  = google_container_cluster.gke.name
 
   node_config {
@@ -39,7 +39,7 @@ resource "google_container_node_pool" "extra" {
   count = var.extra_nodes_type == null ? 0 : 1
   name  = "${var.cluster_name}-extra-node-pool"
 
-  location = var.region
+  location = var.zone
   cluster  = google_container_cluster.gke.name
 
   node_config {

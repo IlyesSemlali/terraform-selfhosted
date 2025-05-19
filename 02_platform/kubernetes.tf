@@ -2,6 +2,7 @@ module "kubernetes" {
   source = "../tf_modules/gcp/kubernetes"
 
   region = var.region
+  zone   = var.zone
 
   cluster_name          = var.kubernetes_cluster_name
   deletion_protection   = var.deletion_protection
