@@ -1,0 +1,24 @@
+# vim: filetype=yaml
+pg_databases:
+  - name: "immich"
+    extensions: ["vector"]
+    size: 10
+storage:
+  - storage_name: "library"
+    size: 10
+    access_mode: "ReadWriteOnce"
+  - storage_name: "ml"
+    size: 10
+    access_mode: "ReadWriteOnce"
+
+authentication:
+  name: "Immich"
+  type: "oauth2"
+
+  description: "Photo library"
+  group: "Private Cloud"
+  redirect_uris: ${join(";", [
+    "app.immich:///oauth-callback",
+    "https://immich.${domain}/auth/login",
+    "https://immich.${domain}/user-settings"
+  ])}

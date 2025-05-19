@@ -5,48 +5,14 @@
 # to the upper one to create the corresponding
 # services, persistent volumes and secrets
 
-# Applications configuration:
-#
-# - if the component is empty this means that it's the global instance
-#   otherwise there will be a dedicated DB for that component
-#
-# - size is in GB
-
 locals {
   applications = {
 
     immich = {
-      pg_databases = [
-        {
-          name       = "immich"
-          extensions = ["vector"]
-          size       = 10
-        }
-      ]
-      storage = [
-        {
-          storage_name = "library"
-          size         = 10
-          access_mode  = "ReadWriteOnce"
-        },
-        {
-          storage_name = "ml"
-          size         = 10
-          access_mode  = "ReadWriteOnce"
-        }
-      ]
-      authentication = {
-        name = "Immich"
-        type = "oauth2",
+      pg_databases   = yamldecode(templatefile("applications/immich-config.yaml.tftpl", { domain = var.domain })).pg_databases
+      storage        = yamldecode(templatefile("applications/immich-config.yaml.tftpl", { domain = var.domain })).storage
+      authentication = yamldecode(templatefile("applications/immich-config.yaml.tftpl", { domain = var.domain })).authentication
 
-        description = "Photo library"
-        group       = "Private Cloud"
-        redirect_uris = join(";", [
-          "app.immich:///oauth-callback",
-          "https://immich.${var.domain}/auth/login",
-          "https://immich.${var.domain}/user-settings"
-        ])
-      }
       helm_release = {
         values     = file("applications/immich-values.yaml.tftpl")
         repository = "https://immich-app.github.io/immich-charts"
@@ -54,6 +20,5 @@ locals {
         version    = "0.9.2"
       }
     }
-
   }
 }
