@@ -46,3 +46,13 @@ variable "authentik_pg_password" {
   sensitive   = true
   type        = string
 }
+
+variable "cluster_name" {
+  description = "GKE Cluster Name"
+  type        = string
+}
+
+variable "native_routing_cidr" {
+  description = "GKE IPV4 native routing CIDR"
+  type        = string
+}

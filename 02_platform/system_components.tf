@@ -40,10 +40,12 @@ module "authentik_database" {
 }
 
 module "system" {
-  source = "../tf_modules/agnostic/system_components"
+  source = "../tf_modules/gcp/system_components"
 
-  project = var.project
-  domain  = var.domain
+  project             = var.project
+  cluster_name        = var.kubernetes_cluster_name
+  native_routing_cidr = module.kubernetes.native_routing_cidr
+  domain              = var.domain
 
   kubernetes_namespace = kubernetes_namespace.system.metadata[0].name
 
