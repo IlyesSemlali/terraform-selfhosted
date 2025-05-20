@@ -20,6 +20,10 @@ module "postgresql" {
   region = var.region
 }
 
+# TODO: Use this mechanism to fix this error:
+#
+# │ Error: Error, failed to deleteuser immich in instance postgresql: googleapi: Error 400: Invalid request: failed to delete user immich: . role "immich" cannot be dropped because some objects depend on it Details: 390 objects in database immich., invalid
+
 resource "time_sleep" "wait_for_postgresql" {
   depends_on = [module.postgresql]
 
