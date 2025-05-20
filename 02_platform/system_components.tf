@@ -65,8 +65,9 @@ module "helm_releases" {
   source   = "../tf_modules/agnostic/helm_release/"
   for_each = { for component, config in local.system_components : component => config if length(config.helm_release) != 0 }
 
-  name   = lower(each.value.metadata.name)
-  domain = var.domain
+  name      = lower(each.value.metadata.name)
+  namespace = try(each.value.helm_release.namespace, kubernetes_namespace.system.metadata[0].name)
+  domain    = var.domain
 
   helm_values        = each.value.helm_release.values
   helm_repository    = each.value.helm_release.repository

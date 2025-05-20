@@ -7,8 +7,9 @@ module "helm_releases" {
   source   = "../tf_modules/agnostic/helm_release/"
   for_each = local.applications
 
-  name   = lower(each.value.metadata.name)
-  domain = var.domain
+  name      = lower(each.value.metadata.name)
+  namespace = lower(each.value.metadata.name)
+  domain    = var.domain
 
   helm_values        = each.value.helm_release.values
   helm_repository    = each.value.helm_release.repository

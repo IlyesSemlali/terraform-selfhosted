@@ -8,7 +8,7 @@ locals {
 
 resource "helm_release" "application" {
   name      = var.name
-  namespace = var.name
+  namespace = var.namespace
 
   repository = var.helm_repository
   chart      = var.helm_chart

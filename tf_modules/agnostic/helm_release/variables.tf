@@ -8,6 +8,11 @@ variable "name" {
   type        = string
 }
 
+variable "namespace" {
+  description = "Kubernetes namespace"
+  type        = string
+}
+
 variable "helm_repository" {
   description = "Helm Chart's"
   type        = string
