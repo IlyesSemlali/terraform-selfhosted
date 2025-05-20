@@ -1,3 +1,7 @@
+locals {
+  system_components = data.terraform_remote_state.foundation.outputs.system_components
+}
+
 resource "kubernetes_namespace" "system" {
   lifecycle {
     ignore_changes = [
@@ -16,7 +20,7 @@ module "traefik_storage" {
   source = "../tf_modules/gcp/storage_attachement"
 
   application_name      = "traefik"
-  application_namespace = "system"
+  application_namespace = kubernetes_namespace.system.metadata[0].name
   storage_name          = "certificates"
   size                  = 1
 
@@ -27,7 +31,7 @@ module "authentik_database" {
   source = "../tf_modules/gcp/postgresql-database"
 
   name                  = "authentik"
-  application_namespace = "system"
+  application_namespace = kubernetes_namespace.system.metadata[0].name
 
   depends_on = [
     kubernetes_namespace.system,
@@ -57,3 +61,18 @@ module "system" {
   ]
 }
 
+module "helm_releases" {
+  source   = "../tf_modules/agnostic/helm_release/"
+  for_each = { for component, config in local.system_components : component => config if length(config.helm_release) != 0 }
+
+  name   = lower(each.value.metadata.name)
+  domain = var.domain
+
+  helm_values        = each.value.helm_release.values
+  helm_repository    = each.value.helm_release.repository
+  helm_chart         = each.value.helm_release.chart
+  helm_chart_version = each.value.helm_release.version
+
+  # No OAuth for System Components, if needed deploy them
+  # as regular applications
+}

@@ -23,26 +23,6 @@ variable "auth_type" {
   type        = string
 }
 
-variable "helm_repository" {
-  description = "Helm Chart's"
-  type        = string
-}
-
-variable "helm_chart" {
-  description = "Helm Chart's name"
-  type        = string
-}
-
-variable "helm_chart_version" {
-  description = "Helm Chart's version"
-  type        = string
-}
-
-variable "helm_values" {
-  description = "Helm Releases' values"
-  type        = string
-}
-
 variable "oauth_redirect_uris" {
   description = "List of redirection URIs for OAuth2 config"
   type        = list(string)
