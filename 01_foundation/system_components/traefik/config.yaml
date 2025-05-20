@@ -1,8 +1,7 @@
-# vim: filetype=yaml
 storage:
   - storage_name: "certificates"
     size: 1
     access_mode: "ReadWriteOnce"
-pg_databases: []
+
 authentication:
   type: "proxy"
