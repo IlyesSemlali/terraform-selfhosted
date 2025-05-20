@@ -19,6 +19,11 @@ locals {
       storage        = yamldecode(templatefile("applications/immich-config.yaml.tftpl", { domain = var.domain })).storage,
       authentication = yamldecode(templatefile("applications/immich-config.yaml.tftpl", { domain = var.domain })).authentication,
 
+      ingress = {
+        service_port = 2283
+        service_name = "immich-server"
+      }
+
       helm_release = {
         values     = file("applications/immich-values.yaml.tftpl")
         repository = "https://immich-app.github.io/immich-charts"

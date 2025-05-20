@@ -16,6 +16,9 @@ module "helm_releases" {
   helm_chart         = each.value.helm_release.chart
   helm_chart_version = each.value.helm_release.version
 
+  service_name = try(each.value.ingress.service_name, null)
+  service_port = try(each.value.ingress.service_port, null)
+
   # Setting empty strings, as templates can't handle null values
   oauth_scopes        = try(each.value.authentication.oauth_scopes, "")
   oauth_client_secret = try(module.authentications[each.key].oauth_client_secret, "")

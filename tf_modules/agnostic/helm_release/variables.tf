@@ -33,6 +33,18 @@ variable "helm_values" {
   type        = string
 }
 
+variable "service_name" {
+  description = "Service Name to point to in the IngressRoute"
+  default     = null
+  type        = string
+}
+
+variable "service_port" {
+  description = "Service Port to point to in the IngressRoute"
+  default     = null
+  type        = number
+}
+
 variable "oauth_client_secret" {
   description = "OAuth client secret"
   type        = string
