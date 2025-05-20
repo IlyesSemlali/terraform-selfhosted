@@ -9,9 +9,15 @@ locals {
   applications = {
 
     immich = {
-      pg_databases   = yamldecode(templatefile("applications/immich-config.yaml.tftpl", { domain = var.domain })).pg_databases
-      storage        = yamldecode(templatefile("applications/immich-config.yaml.tftpl", { domain = var.domain })).storage
-      authentication = yamldecode(templatefile("applications/immich-config.yaml.tftpl", { domain = var.domain })).authentication
+      metadata = {
+        name        = "Immich",
+        description = "Photo library",
+        group       = "Private Cloud",
+      }
+
+      pg_databases   = yamldecode(templatefile("applications/immich-config.yaml.tftpl", { domain = var.domain })).pg_databases,
+      storage        = yamldecode(templatefile("applications/immich-config.yaml.tftpl", { domain = var.domain })).storage,
+      authentication = yamldecode(templatefile("applications/immich-config.yaml.tftpl", { domain = var.domain })).authentication,
 
       helm_release = {
         values     = file("applications/immich-values.yaml.tftpl")

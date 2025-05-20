@@ -12,12 +12,10 @@ storage:
     access_mode: "ReadWriteOnce"
 
 authentication:
-  name: "Immich"
   type: "oauth2"
 
-  description: "Photo library"
-  group: "Private Cloud"
-  redirect_uris: ${join(";", [
+  oauth_scopes: "openid email profile"
+  oauth_redirect_uris: ${join(";", [
     "app.immich:///oauth-callback",
     "https://immich.${domain}/auth/login",
     "https://immich.${domain}/user-settings"

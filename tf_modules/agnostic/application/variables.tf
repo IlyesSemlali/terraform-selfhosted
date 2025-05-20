@@ -3,23 +3,67 @@ variable "domain" {
   type        = string
 }
 
-variable "system_components" {
-  description = "List of applications' configuraionts"
-  type = map(object({
-    pg_databases   = list(any),
-    storage        = list(any),
-    authentication = map(any),
-    # TODO: re-enable this once system_components have been moved TF management
-    # helm_release  = map(any),
-  }))
+variable "name" {
+  description = "Authentik application name"
+  type        = string
 }
 
-variable "applications" {
-  description = "List of applications' configuraionts"
-  type = map(object({
-    pg_databases   = list(any),
-    storage        = list(any),
-    authentication = map(any),
-    helm_release   = map(any),
-  }))
+variable "description" {
+  description = "Application description"
+  type        = string
+}
+
+variable "group" {
+  description = "Authentik application group"
+  type        = string
+}
+
+variable "auth_type" {
+  description = "Type of authentication"
+  type        = string
+}
+
+variable "helm_repository" {
+  description = "Helm Chart's"
+  type        = string
+}
+
+variable "helm_chart" {
+  description = "Helm Chart's name"
+  type        = string
+}
+
+variable "helm_chart_version" {
+  description = "Helm Chart's version"
+  type        = string
+}
+
+variable "helm_values" {
+  description = "Helm Releases' values"
+  type        = string
+}
+
+variable "oauth_redirect_uris" {
+  description = "List of redirection URIs for OAuth2 config"
+  type        = list(string)
+}
+
+variable "oauth_scopes" {
+  description = "Space seperated list of OAuth2 scopes to allow"
+  type        = string
+}
+
+variable "oauth_signing_key" {
+  description = "OAuth2 signing key"
+  type        = string
+}
+
+variable "authentik_authorization_flow" {
+  description = "Authentik authorization_flow"
+  type        = string
+}
+
+variable "authentik_invalidation_flow" {
+  description = "Authentik invalidation_flow"
+  type        = string
 }

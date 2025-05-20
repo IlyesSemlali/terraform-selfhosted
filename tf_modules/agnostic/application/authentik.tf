@@ -1,111 +1,78 @@
+data "authentik_property_mapping_provider_scope" "openid" {
+  managed = "goauthentik.io/providers/oauth2/scope-openid"
+}
+
+data "authentik_property_mapping_provider_scope" "email" {
+  managed = "goauthentik.io/providers/oauth2/scope-email"
+}
+
+data "authentik_property_mapping_provider_scope" "profile" {
+  managed = "goauthentik.io/providers/oauth2/scope-profile"
+}
+
 locals {
-  authentications = {
-    for app, config in merge(var.applications, var.system_components) : app => config.authentication
+  scopes = {
+    openid  = data.authentik_property_mapping_provider_scope.openid.id,
+    email   = data.authentik_property_mapping_provider_scope.email.id,
+    profile = data.authentik_property_mapping_provider_scope.profile.id,
   }
-
-  proxy_auths = {
-    for app, auth in local.authentications : app => auth if auth.type == "proxy"
-  }
-
-  oauth2_auths = {
-    for app, auth in local.authentications : app => auth if auth.type == "oauth2"
-  }
-}
-
-data "authentik_flow" "default_invalidation_flow" {
-  slug = "default-provider-invalidation-flow"
-}
-
-data "authentik_flow" "default_authorization_flow" {
-  slug = "default-provider-authorization-implicit-consent"
-}
-
-data "authentik_property_mapping_provider_scope" "scopes" {
-  managed_list = [
-    "goauthentik.io/providers/oauth2/scope-profile",
-    "goauthentik.io/providers/oauth2/scope-email",
-    "goauthentik.io/providers/oauth2/scope-openid"
-  ]
-}
-
-data "authentik_certificate_key_pair" "generated" {
-  name = "authentik Self-signed Certificate"
-}
-
-# TODO: import authentik integration to avoid duplicate:
-# https://developer.hashicorp.com/terraform/language/import
-resource "authentik_service_connection_kubernetes" "local" {
-  name  = "Kubernetes"
-  local = true
-}
-
-resource "authentik_outpost" "forward_auth_outpost" {
-  name = "forwardAuth"
-  protocol_providers = [
-    for app, auth_config in local.proxy_auths : authentik_provider_proxy.app[app].id
-  ]
-
-  config = jsonencode({
-    authentik_host          = format("https://auth.${var.domain}")
-    authentik_host_insecure = true # TODO: prod: Set this to false
-  })
-
-  service_connection = authentik_service_connection_kubernetes.local.id
 }
 
 resource "authentik_provider_proxy" "app" {
-  for_each = local.proxy_auths
+  count = var.auth_type == "proxy" ? 1 : 0
 
-  name          = "${each.value.name} forwardAuth"
+  name          = lower(var.name)
   external_host = "https://auth.${var.domain}"
 
   mode                  = "forward_domain"
   cookie_domain         = var.domain
   access_token_validity = "hours=24"
 
-  authorization_flow = data.authentik_flow.default_authorization_flow.id
-  invalidation_flow  = data.authentik_flow.default_invalidation_flow.id
+  authorization_flow = var.authentik_authorization_flow
+  invalidation_flow  = var.authentik_invalidation_flow
 }
 
 resource "authentik_provider_oauth2" "app" {
-  for_each = local.oauth2_auths
+  count = var.auth_type == "oauth2" ? 1 : 0
 
-  name        = each.value.name
-  client_id   = each.key
+  name        = lower(var.name)
+  client_id   = lower(var.name)
   client_type = "confidential"
-  signing_key = data.authentik_certificate_key_pair.generated.id
+  signing_key = var.oauth_signing_key
 
   allowed_redirect_uris = [
-    for redirect_uri in split(";", each.value.redirect_uris) : {
+    for redirect_uri in var.oauth_redirect_uris : {
       matching_mode = "regex",
       url           = redirect_uri,
     }
   ]
 
-  authorization_flow = data.authentik_flow.default_authorization_flow.id
-  invalidation_flow  = data.authentik_flow.default_invalidation_flow.id
+  authorization_flow = var.authentik_authorization_flow
+  invalidation_flow  = var.authentik_invalidation_flow
 
-  property_mappings = data.authentik_property_mapping_provider_scope.scopes.ids
+  property_mappings = [for scope in split(" ", var.oauth_scopes) : local.scopes[scope]]
 }
 
 resource "authentik_application" "proxy" {
-  for_each = local.proxy_auths
+  count = var.auth_type == "proxy" ? 1 : 0
 
-  protocol_provider = authentik_provider_proxy.app[each.key].id
-  name              = each.value.name
-  slug              = each.key
-  meta_launch_url   = "https://${each.key}.${var.domain}/"
-  meta_description  = each.value.description
-  group             = each.value.group
+  name              = var.name
+  protocol_provider = authentik_provider_proxy.app[count.index].id
+
+  slug             = lower(var.name)
+  meta_launch_url  = "https://${lower(var.name)}.${var.domain}/"
+  meta_description = var.description
+  group            = var.group
 }
 
 resource "authentik_application" "oauth2" {
-  for_each = local.oauth2_auths
+  count = var.auth_type == "oauth2" ? 1 : 0
 
-  protocol_provider = authentik_provider_oauth2.app[each.key].id
-  name              = each.value.name
-  slug              = each.key
-  meta_launch_url   = "https://${each.key}.${var.domain}/"
-  meta_description  = each.value.description
-  group             = each.value.group
+  name              = var.name
+  protocol_provider = authentik_provider_oauth2.app[count.index].id
+
+  slug             = lower(var.name)
+  meta_launch_url  = "https://${lower(var.name)}.${var.domain}/"
+  meta_description = var.description
+  group            = var.group
 }

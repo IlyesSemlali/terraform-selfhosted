@@ -1,26 +1,18 @@
-locals {
-  helm_releases = {
-    # TODO: reenable merge of both app sources:
-    # for app, config in merge(var.applications, var.system_components) : app => config
-    for app, config in var.applications : app => config.helm_release
-  }
-}
-
 resource "helm_release" "application" {
-  for_each = local.helm_releases
+  count = var.auth_type == "oauth2" ? 1 : 0
 
-  name      = each.key
-  namespace = each.key
+  name      = lower(var.name)
+  namespace = lower(var.name)
 
-  repository = each.value.repository
-  chart      = each.value.chart
+  repository = var.helm_repository
+  chart      = var.helm_chart
 
-  version = each.value.version
-  values = [templatestring(each.value.values, {
-    oauth_issuer_url    = "https://auth.${var.domain}/application/o/${each.key}/",
-    oauth_client_id     = authentik_provider_oauth2.app[each.key].client_id
-    oauth_client_secret = authentik_provider_oauth2.app[each.key].client_secret
-    oauth_scopes        = "openid email profile"
+  version = var.helm_chart_version
+  values = [templatestring(var.helm_values, {
+    oauth_issuer_url    = "https://auth.${var.domain}/application/o/${lower(var.name)}/",
+    oauth_client_id     = authentik_provider_oauth2.app[count.index].client_id
+    oauth_client_secret = authentik_provider_oauth2.app[count.index].client_secret
+    oauth_scopes        = var.oauth_scopes
   })]
 
   # depends_on = [kubernetes_secret.external_dns_sa]

@@ -1,23 +1,22 @@
 locals {
   system_components = {
     traefik = {
-      pg_databases = []
-      storage = [
-        {
-          storage_name = "certificates"
-          size         = 1
-          access_mode  = "ReadWriteOnce"
-        },
-      ]
-      authentication = {
-        name = "Traefik"
-        type = "proxy"
-
-        description = "Traefik Ingress Controller Dashboord"
-        group       = "Admin Panel"
+      metadata = {
+        name        = "Traefik",
+        description = "Traefik Dashboard",
+        group       = "Admin Panel",
       }
-      # TODO: move traefik helm release here
-      # TODO: also add all other system components
+
+      pg_databases   = yamldecode(templatefile("system_components/traefik-config.yaml.tftpl", { domain = var.domain })).pg_databases,
+      storage        = yamldecode(templatefile("system_components/traefik-config.yaml.tftpl", { domain = var.domain })).storage,
+      authentication = yamldecode(templatefile("system_components/traefik-config.yaml.tftpl", { domain = var.domain })).authentication,
+
+      helm_release = {
+        values     = file("system_components/traefik-values.yaml.tftpl")
+        repository = "https://traefik.github.io/charts"
+        chart      = "traefik"
+        version    = "v35.3.0"
+      }
     }
   }
 }
