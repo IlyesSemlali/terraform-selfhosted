@@ -21,6 +21,7 @@ module "storage" {
 
   application_name = each.value.application_name
   storage_name     = each.value.storage_name
+  zone             = var.zone
   size             = each.value.size
 }
 
@@ -29,5 +30,6 @@ module "traefik_storage" {
 
   application_name = "traefik"
   storage_name     = "certificates"
+  zone             = var.zone
   size             = 1
 }

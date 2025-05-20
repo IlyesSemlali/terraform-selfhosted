@@ -11,7 +11,6 @@ variable "storage_name" {
 variable "zone" {
   description = "Google Cloud default compute zone"
   type        = string
-  default     = "europe-west1-d"
 }
 
 variable "size" {

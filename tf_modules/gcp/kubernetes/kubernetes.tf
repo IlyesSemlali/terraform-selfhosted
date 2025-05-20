@@ -29,6 +29,10 @@ resource "google_container_cluster" "gke" {
     create = "15m"
     update = "40m"
   }
+
+  lifecycle {
+    ignore_changes = [node_config]
+  }
 }
 
 resource "google_container_node_pool" "permanent" {
@@ -43,7 +47,7 @@ resource "google_container_node_pool" "permanent" {
   ]
 
   node_config {
-    preemptible  = true
+    preemptible  = false
     machine_type = var.permanent_nodes_type
 
     # Google recommends custom service accounts that have
@@ -65,7 +69,7 @@ resource "google_container_node_pool" "extra" {
   count = var.extra_nodes_type == null ? 0 : 1
   name  = "${var.cluster_name}-extra-node-pool"
 
-  location = var.zone
+  location = var.region
   cluster  = google_container_cluster.gke.name
 
   # Since we're using zonal disks, it's crucial that nodes
