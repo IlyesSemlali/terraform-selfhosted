@@ -3,6 +3,11 @@ variable "project" {
   type        = string
 }
 
+variable "domain" {
+  description = "DNS domain"
+  type        = string
+}
+
 variable "kubernetes_namespace" {
   description = "Kubernetes namspace"
   type        = string
