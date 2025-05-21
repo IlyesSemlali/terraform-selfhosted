@@ -21,6 +21,8 @@ resource "helm_release" "application" {
     oauth_scopes        = local.oauth_scopes
 
   })]
+
+  timeout = 360
 }
 
 resource "kubernetes_manifest" "https_redirect_middleware" {
