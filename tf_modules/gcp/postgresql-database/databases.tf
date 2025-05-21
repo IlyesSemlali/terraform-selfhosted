@@ -24,6 +24,12 @@ resource "google_sql_user" "db" {
   password = random_password.db.result
 }
 
+resource "time_sleep" "wait_before_user_deletion" {
+  depends_on = [google_sql_user.db]
+
+  destroy_duration = "60s"
+}
+
 resource "kubernetes_secret" "db_infos" {
   lifecycle {
     replace_triggered_by = [

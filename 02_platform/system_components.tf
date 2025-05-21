@@ -35,7 +35,7 @@ module "authentik_database" {
 
   depends_on = [
     kubernetes_namespace.system,
-    time_sleep.wait_for_postgresql
+    module.postgresql
   ]
 }
 

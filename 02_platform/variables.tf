@@ -45,16 +45,16 @@ variable "kubernetes_permanent_nodes_type" {
   default     = "e2-standard-2"
 }
 
-# variable "kubernetes_permanent_nodes_count" {
-#   description = "Number of instances for the Kubernetes permanent node pool"
-#   type        = number
-#   default     = 1
-# }
-
 variable "kubernetes_extra_nodes_type" {
   description = "Instances types for the Kubernetes cluster nodes, can be pricy !"
   type        = string
   default     = "e2-standard-2"
+}
+
+variable "kubernetes_pernanent_nodes" {
+  description = "Amount of permanent nodes on the cluster"
+  type        = number
+  default     = 1
 }
 
 variable "kubernetes_min_extra_nodes" {
