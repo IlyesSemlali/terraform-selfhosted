@@ -15,8 +15,8 @@ extraVolumeMounts:
 domainFilters:
   - ${domain}
 registry: noop
-extraArgs:
-  - --traefik-disable-legacy
+# extraArgs:
+#   - --traefik-disable-legacy
 sources:
   - service
   - traefik-proxy
