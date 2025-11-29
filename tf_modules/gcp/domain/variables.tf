@@ -30,3 +30,8 @@ variable "gcp_domain_price" {
   description = "DNS Domain Yearly pricing in dollars"
   type        = number
 }
+
+variable "name_servers" {
+  description = "DNS Name Servers for the domain registration"
+  type        = list(string)
+}

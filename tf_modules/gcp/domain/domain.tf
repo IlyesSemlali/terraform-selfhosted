@@ -13,14 +13,14 @@ resource "google_clouddomains_registration" "my_registration" {
 
   dns_settings {
     custom_dns {
-      name_servers = [
-        "ns-cloud-a1.googledomains.com.",
-        "ns-cloud-a2.googledomains.com.",
-        "ns-cloud-a3.googledomains.com.",
-        "ns-cloud-a4.googledomains.com."
-      ]
+      name_servers = var.name_servers
     }
   }
+
+  management_settings {
+    transfer_lock_state = "LOCKED"
+  }
+
 
   contact_settings {
     privacy = "REDACTED_CONTACT_DATA"

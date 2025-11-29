@@ -7,4 +7,5 @@ module "main_domain" {
   project_owner_address      = var.project_owner_address
   project_owner_phone_number = var.project_owner_phone_number
   gcp_domain_price           = var.gcp_domain_price
+  name_servers               = module.network.name_servers
 }
