@@ -67,18 +67,27 @@ resource "kubernetes_service" "postgresql" {
   }
 }
 
-resource "kubernetes_endpoints" "postgresql" {
+resource "kubernetes_endpoint_slice_v1" "postgresql" {
   metadata {
     name      = kubernetes_service.postgresql.metadata[0].name
     namespace = var.application_namespace
+    labels = {
+      "kubernetes.io/service-name" = kubernetes_service.postgresql.metadata[0].name
+    }
   }
 
-  subset {
-    address {
-      ip = data.google_sql_database_instance.cloudsql.private_ip_address
-    }
-    port {
-      port = 5432
+  address_type = "IPv4"
+
+  port {
+    name         = "postgresql"
+    port         = 5432
+    app_protocol = "TCP"
+  }
+
+  endpoint {
+    addresses = [data.google_sql_database_instance.cloudsql.private_ip_address]
+    condition {
+      ready = true
     }
   }
 }
@@ -150,4 +159,3 @@ resource "kubernetes_endpoints" "postgresql" {
 #     }
 #   }
 # }
-
