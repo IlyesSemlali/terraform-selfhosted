@@ -28,7 +28,7 @@ locals {
         values     = file("applications/immich-values.yaml.tftpl")
         repository = "https://immich-app.github.io/immich-charts"
         chart      = "immich"
-        version    = "0.9.2"
+        version    = "0.10.3"
       }
     }
   }
