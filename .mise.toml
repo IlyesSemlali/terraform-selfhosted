@@ -4,13 +4,16 @@
 gcloud = "latest"
 
 # Kube
-kubectl = "1.34"
+helm = "latest"
 krew = "0.4"
+kubectl = "1.34"
+
+# IaC
 terraform = "1.13"
 
 # Data Parsing
-yq = "4"
 jq = "latest"
+yq = "4"
 
 # Build Tools
 just = "1"
@@ -19,4 +22,4 @@ just = "1"
 pre-commit = "4"
 
 [hooks]
-postinstall = "kubectl krew install ctx -v0"
+postinstall = "kubectl krew install ctx -v0; gcloud components install --quiet gke-gcloud-auth-plugin"
