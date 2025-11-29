@@ -1,39 +1,5 @@
 ---
 # vim: filetype=yaml
-env:
-- name: IMMICH_CONFIG_FILE
-  value: /config/immich-config.yaml
-
-- name: DB_VECTOR_EXTENSION
-  value: pgvector
-
-- name: DB_HOSTNAME
-  valueFrom:
-    secretKeyRef:
-      name: db-credentials-immich
-      key: host
-
-- name: DB_DATABASE_NAME
-  valueFrom:
-    secretKeyRef:
-      name: db-credentials-immich
-      key: database
-
-- name: DB_USERNAME
-  valueFrom:
-    secretKeyRef:
-      name: db-credentials-immich
-      key: username
-
-- name: DB_PASSWORD
-  valueFrom:
-    secretKeyRef:
-      name: db-credentials-immich
-      key: password
-
-- name: REDIS_HOSTNAME
-  value: immich-redis-master
-
 controllers:
   main:
     containers:
@@ -41,20 +7,62 @@ controllers:
         image:
           tag: v2.0.0
         env:
-          REDIS_HOSTNAME: '{{ printf "%s-valkey" .Release.Name }}'
-          # IMMICH_MACHINE_LEARNING_URL: '{{ printf "http://%s-machine-learning:3003" .Release.Name }}'
+        # Global Immich config file environment variable
+        - name: IMMICH_CONFIG_FILE
+          value: /config/immich-config.yaml
+
+        # Database connection variables (moved from top level)
+        - name: DB_VECTOR_EXTENSION
+          value: pgvector
+
+        - name: DB_HOSTNAME
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials-immich
+              key: host
+
+        - name: DB_DATABASE_NAME
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials-immich
+              key: database
+
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials-immich
+              key: username
+
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials-immich
+              key: password
+
+        # Fixes the "remaining connection slots are reserved for non-replication superuser connections"
+        # on small instances
+        - name: DB_POOL_SIZE
+          value: "5"
+
+        - name: DB_POOL_IDLE_TIMEOUT
+          value: "10000" # Closes idle connections after 10 seconds
+
+        # Redis connection variable (moved and fixed to use correct Valkey name)
+        - name: REDIS_HOSTNAME
+          value: '{{ printf "%s-valkey" .Release.Name }}'
+
+        # Note: REDIS_HOSTNAME defined here is redundant if defined above,
+        # but is kept here for components that need to override the global setting.
+        # The IMMICH_MACHINE_LEARNING_URL is commented out as the component is disabled.
+        # REDIS_HOSTNAME: '{{ printf "%s-valkey" .Release.Name }}'
+        # IMMICH_MACHINE_LEARNING_URL: '{{ printf "http://%s-machine-learning:3003" .Release.Name }}'
 
 immich:
   metrics:
     enabled: false
   persistence:
     library:
-      # Automatically creating the library volume is not supported by this chart
-      # You have to specify an existing PVC to use
       existingClaim: immich-library
-  # configuration is immich-config.json converted to yaml
-  # ref: https://immich.app/docs/install/config-file/
-  #
   configuration:
     passwordLogin:
       enabled: false
@@ -70,7 +78,6 @@ immich:
       issuerUrl: ${oauth_issuer_url}
       scope: ${oauth_scopes}
 
-# Dependencies
 valkey:
   enabled: true
   auth:
@@ -87,11 +94,8 @@ valkey:
     data:
       enabled: false
 
-# Immich components
-
 server:
   enabled: true
-
   controllers:
     main:
       containers:

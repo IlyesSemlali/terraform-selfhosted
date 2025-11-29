@@ -30,6 +30,11 @@ resource "google_sql_database_instance" "postgresql" {
       private_network                               = data.google_compute_network.primary_network.self_link
       enable_private_path_for_google_cloud_services = true
     }
+
+    database_flags {
+      name  = "max_connections"
+      value = "150"
+    }
   }
 
   # TODO: set this based on whether it's a production instance and it's not in pre-delete stage
