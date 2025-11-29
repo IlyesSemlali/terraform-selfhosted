@@ -1,28 +1,6 @@
-variable "project" {
-  description = "Project name"
+variable "main_domain" {
+  description = "Main DNS domain for the SelfHosted platform"
   type        = string
-}
-
-variable "domain" {
-  description = "DNS Domain "
-  type        = string
-}
-
-variable "gcp_domain_price" {
-  description = "DNS Domain Yearly pricing in dollars"
-  type        = number
-}
-
-variable "region" {
-  description = "Belgium"
-  type        = string
-  default     = "europe-west1"
-}
-
-variable "zone" {
-  description = "Google Cloud default compute zone"
-  type        = string
-  default     = "europe-west1-d"
 }
 
 variable "project_owner_email" {
@@ -46,4 +24,9 @@ variable "project_owner_address" {
       address_lines = list(string)
     }
   )
+}
+
+variable "gcp_domain_price" {
+  description = "DNS Domain Yearly pricing in dollars"
+  type        = number
 }
