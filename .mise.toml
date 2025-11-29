@@ -1,5 +1,8 @@
 [tools]
 
+# Cloud CLI
+gcloud = "latest"
+
 # Kube
 kubectl = "1.34"
 krew = "0.4"
