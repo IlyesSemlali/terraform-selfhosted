@@ -67,6 +67,29 @@ resource "kubernetes_service" "postgresql" {
   }
 }
 
+# At this stage v1.33, we need both the endpoint and endpointslices, the first
+# because the kube-dns can't create the right DNS record without it, and the second
+# because kuberneres stopped supporting headless services for legacy endpoints
+
+resource "kubernetes_endpoints" "postgresql" {
+  metadata {
+    name      = kubernetes_service.postgresql.metadata[0].name
+    namespace = var.application_namespace
+  }
+
+  subset {
+    address {
+      ip = data.google_sql_database_instance.cloudsql.private_ip_address
+    }
+
+    port {
+      name     = "postgresql"
+      port     = 5432
+      protocol = "TCP"
+    }
+  }
+}
+
 resource "kubernetes_endpoint_slice_v1" "postgresql" {
   metadata {
     name      = kubernetes_service.postgresql.metadata[0].name

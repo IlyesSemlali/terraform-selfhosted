@@ -6,23 +6,32 @@ policy: sync
 env:
 - name: GOOGLE_APPLICATION_CREDENTIALS
   value: /etc/secrets/service-account/key.json
+
 extraVolumes:
 - name: google-service-account
   secret:
     secretName: external-dns-gcp-sa
+
 extraVolumeMounts:
 - name: google-service-account
   mountPath: /etc/secrets/service-account/
+
 domainFilters:
 - ${domain}
+
 registry: noop
+
 # extraArgs:
 #   - --traefik-disable-legacy
+
 sources:
 - service
 - ingress
+
 logLevel: info
+
 rbac:
   create: true
+
 serviceAccount:
   create: false

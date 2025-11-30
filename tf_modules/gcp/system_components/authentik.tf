@@ -79,7 +79,8 @@ resource "kubernetes_manifest" "authentik_ingress" {
       "name"      = "authentik"
       "namespace" = "system"
       "annotations" = {
-        "external-dns.alpha.kubernetes.io/target"          = "ingress.${var.domain}"
+        # No external-dns annotation here, it's handled at the ingress service level
+        # as it needs an A record to work properly
         "cert-manager.io/cluster-issuer"                   = "letsencrypt-staging"
         "traefik.ingress.kubernetes.io/router.middlewares" = "system-redirect-to-https@kubernetescrd"
         "traefik.ingress.kubernetes.io/router.entrypoints" = "web,websecure"
