@@ -53,4 +53,3 @@ resource "authentik_outpost" "forward_auth_outpost" {
 
   service_connection = authentik_service_connection_kubernetes.local.id
 }
-

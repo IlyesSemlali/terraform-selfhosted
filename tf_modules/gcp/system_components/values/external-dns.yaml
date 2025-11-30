@@ -1,28 +1,28 @@
+---
 provider:
   name: google
 policy: sync
 
 env:
-  - name: GOOGLE_APPLICATION_CREDENTIALS
-    value: /etc/secrets/service-account/key.json
+- name: GOOGLE_APPLICATION_CREDENTIALS
+  value: /etc/secrets/service-account/key.json
 extraVolumes:
-  - name: google-service-account
-    secret:
-      secretName: external-dns-gcp-sa
+- name: google-service-account
+  secret:
+    secretName: external-dns-gcp-sa
 extraVolumeMounts:
-  - name: google-service-account
-    mountPath: /etc/secrets/service-account/
+- name: google-service-account
+  mountPath: /etc/secrets/service-account/
 domainFilters:
-  - ${domain}
+- ${domain}
 registry: noop
 # extraArgs:
 #   - --traefik-disable-legacy
 sources:
-  - service
-  - traefik-proxy
+- service
+- ingress
 logLevel: info
 rbac:
   create: true
 serviceAccount:
   create: false
-

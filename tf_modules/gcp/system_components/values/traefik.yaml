@@ -1,10 +1,4 @@
 ---
-additionalArguments:
-- --certificatesresolvers.letsencrypt=true
-- --certificatesresolvers.letsencrypt.acme.httpchallenge=true
-- --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
-- --certificatesresolvers.letsencrypt.acme.storage=/certificates/acme.json
-
 ports:
   web:
     nodePort: 32080
@@ -21,26 +15,20 @@ service:
   annotations:
     external-dns.alpha.kubernetes.io/hostname: "ingress.${domain}." # TODO: fetch this from a secret
 
-ingressRoute:
-
-  healthcheck:
-    enabled: true
-    entryPoints:
-    - web
-
-  dashboard:
-    enabled: true
-    annotations:
-      external-dns.alpha.kubernetes.io/target: ingress.${domain} # TODO: fetch this from a secret
-
-    matchRule: "Host(`traefik.${domain}`)"
-    middlewares:
-    - name: redirect-to-https
-    - name: ak-outpost-forwardauth
-
-    entryPoints:
-    - web # needed for acme challeng
-    - websecure
+# ingress:
+#
+#   healthcheck:
+#     enabled: true
+#     entryPoints:
+#     - web
+#
+#   dashboard:
+#     enabled: true
+#     annotations:
+#       external-dns.alpha.kubernetes.io/target: ingress.${domain} # TODO: fetch this from a secret
+#       traefik.ingress.kubernetes.io/router.middlewares: "redirect-to-https@kubernetescrd,ak-outpost-forwardauth@kubernetescrd"
+#
+#     matchRule: "Host(`traefik.${domain}`)"
 
 # On first Flux Bootstrap, CRDs don't exist, but traefik's
 # Helm chart is thoughtfully designed to allow us to create
@@ -60,34 +48,3 @@ extraObjects:
     redirectScheme:
       scheme: https
       permanent: true
-
-###################
-## IngressRoutes ##
-###################
-
-- apiVersion: traefik.io/v1alpha1
-  kind: IngressRoute
-  metadata:
-    annotations:
-      external-dns.alpha.kubernetes.io/target: ingress.${domain}
-    labels:
-      app.kubernetes.io/instance: authentik-system
-      app.kubernetes.io/managed-by: Flux
-      app.kubernetes.io/name: authentik
-    name: authentik
-    namespace: system
-  spec:
-    entryPoints:
-    - web
-    - websecure
-    routes:
-    - kind: Rule
-      match: Host(`auth.${domain}`)
-      middlewares:
-      - name: redirect-to-https
-      services:
-      - kind: Service
-        name: authentik-server
-        port: 80
-    tls:
-      certResolver: letsencrypt

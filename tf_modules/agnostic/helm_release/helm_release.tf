@@ -43,37 +43,69 @@ resource "kubernetes_manifest" "https_redirect_middleware" {
 }
 
 
-resource "kubernetes_manifest" "ingress_route" {
+resource "kubernetes_manifest" "ingress" {
   manifest = {
-    "apiVersion" = "traefik.io/v1alpha1",
-    "kind"       = "IngressRoute",
+    "apiVersion" = "networking.k8s.io/v1"
+    "kind"       = "Ingress"
     "metadata" = {
       "name"      = var.name
       "namespace" = var.namespace
       "annotations" = {
-        "external-dns.alpha.kubernetes.io/target" = "ingress.${var.domain}"
+        "external-dns.alpha.kubernetes.io/target"          = "ingress.${var.domain}"
+        "cert-manager.io/cluster-issuer"                   = "letsencrypt-staging"
+        "traefik.ingress.kubernetes.io/router.middlewares" = "${var.namespace}-redirect-to-https@kubernetescrd"
+        "traefik.ingress.kubernetes.io/router.entrypoints" = "web,websecure"
       }
     }
+
     "spec" = {
-      "entryPoints" = [
-        "web",
-        "websecure"
-      ],
-      "routes" = [{
-        "kind"  = "Rule",
-        "match" = "Host(`${var.name}.${var.domain}`)",
-        "middlewares" = [{
-          "name" = "redirect-to-https",
-        }]
-        "services" = [{
-          "kind" = "Service",
-          "name" = var.service_name,
-          "port" = var.service_port,
-        }]
+      "ingressClassName" = "traefik"
+      "rules" = [{
+        "host" = "${var.name}.${var.domain}"
+        "http" = {
+          "paths" = [{
+            "path"     = "/"
+            "pathType" = "Prefix"
+            "backend" = {
+              "service" = {
+                "name" = var.service_name
+                "port" = {
+                  "number" = var.service_port
+                }
+              }
+            }
+          }]
+        }
       }]
-      "tls" = {
-        "certResolver" = "letsencrypt"
-      }
+
+      "tls" = [{
+        "hosts"      = ["${var.name}.${var.domain}"]
+        "secretName" = "${var.name}-tls-secret"
+      }]
     }
   }
 }
+
+# TODO: re-enable this, also create one for the authentik outpost somewhere else
+# resource "kubernetes_manifest" "immich_certificate" {
+#   manifest = {
+#     "apiVersion" = "cert-manager.io/v1",
+#     "kind"       = "Certificate",
+#     "metadata" = {
+#       "name"      = "${var.name}-certificate"
+#       "namespace" = var.namespace
+#     }
+#     "spec" = {
+#       "secretName" = "${var.name}-tls-secret",
+#
+#       "dnsNames" = [
+#         "${var.name}.${var.domain}"
+#       ],
+#
+#       "issuerRef" = {
+#         "cert-manager.io/cluster-issuer" = "letsencrypt-staging" # TODO: make this conditional to dev stage
+#         "kind"                           = "ClusterIssuer"
+#       }
+#     }
+#   }
+# }
