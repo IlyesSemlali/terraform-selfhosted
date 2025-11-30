@@ -18,7 +18,7 @@ locals {
     authentik = {
 
       bootstrap_password = var.authentik_bootstrap_password
-      bootstrap_email    = var.authentik_bootstrap_email
+      bootstrap_email    = var.project_owner_email
       bootstrap_token    = var.authentik_bootstrap_token
 
       secret_key = random_password.authentik_secret_key.result
@@ -67,4 +67,3 @@ resource "helm_release" "authentik" {
 
   values = [yamlencode(local.authentik_values)]
 }
-

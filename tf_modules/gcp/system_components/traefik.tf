@@ -7,4 +7,3 @@ resource "helm_release" "traefik" {
 
   values = [templatefile("${path.module}/values/traefik.yaml", { domain = var.domain })]
 }
-

@@ -7,11 +7,10 @@ locals {
         group       = "Admin Panel",
       }
 
-      storage        = yamldecode(templatefile("system_components/traefik/config.yaml", { domain = var.domain })).storage,
+      storage        = null
       authentication = yamldecode(templatefile("system_components/traefik/config.yaml", { domain = var.domain })).authentication,
 
       helm_release = {} # Installed through the system_components module
     }
-
   }
 }

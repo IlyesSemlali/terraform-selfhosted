@@ -4,7 +4,7 @@ variable "domain" {
 }
 
 
-variable "owner_email" {
+variable "project_owner_email" {
   description = "Platform owner's email address"
   type        = string
   # TODO: add validation

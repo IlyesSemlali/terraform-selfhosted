@@ -14,8 +14,8 @@ variable "kubernetes_namespace" {
   default     = "system"
 }
 
-variable "authentik_bootstrap_email" {
-  description = "Authentik akadmin email"
+variable "project_owner_email" {
+  description = "Platform Owner's email"
   type        = string
 }
 

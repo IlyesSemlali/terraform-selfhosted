@@ -16,17 +16,6 @@ resource "kubernetes_namespace" "system" {
   depends_on = [module.kubernetes]
 }
 
-module "traefik_storage" {
-  source = "../tf_modules/gcp/storage_attachement"
-
-  application_name      = "traefik"
-  application_namespace = kubernetes_namespace.system.metadata[0].name
-  storage_name          = "certificates"
-  size                  = 1
-
-  depends_on = [kubernetes_namespace.system]
-}
-
 module "authentik_database" {
   source = "../tf_modules/gcp/postgresql-database"
 
@@ -49,7 +38,7 @@ module "system" {
 
   kubernetes_namespace = kubernetes_namespace.system.metadata[0].name
 
-  authentik_bootstrap_email    = var.owner_email
+  project_owner_email          = var.project_owner_email
   authentik_bootstrap_password = var.authentik_bootstrap_password
   authentik_bootstrap_token    = var.authentik_bootstrap_token
 
@@ -58,7 +47,6 @@ module "system" {
   authentik_pg_password = module.authentik_database.pg_password
 
   depends_on = [
-    module.traefik_storage,
     module.authentik_database
   ]
 }

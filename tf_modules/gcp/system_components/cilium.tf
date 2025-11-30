@@ -10,4 +10,3 @@ resource "helm_release" "cilium" {
     cluster_name        = var.cluster_name
   })]
 }
-

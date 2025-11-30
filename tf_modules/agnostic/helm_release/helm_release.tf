@@ -61,7 +61,7 @@ resource "kubernetes_manifest" "ingress_route" {
       ],
       "routes" = [{
         "kind"  = "Rule",
-        "match" = "Host(`immich.${var.domain}`)",
+        "match" = "Host(`${var.name}.${var.domain}`)",
         "middlewares" = [{
           "name" = "redirect-to-https",
         }]

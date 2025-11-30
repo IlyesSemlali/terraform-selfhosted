@@ -1,7 +1,9 @@
+---
 storage:
-  - storage_name: "certificates"
-    size: 1
-    access_mode: "ReadWriteOnce"
+# example
+# - storage_name: "certificates"
+#   size: 1
+#   access_mode: "ReadWriteOnce"
 
 authentication:
   type: "proxy"
