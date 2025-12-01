@@ -70,52 +70,9 @@ resource "helm_release" "authentik" {
 }
 
 
-# TODO: move this into ./manifests/authentik-ingress.yaml.tftpl
 resource "kubernetes_manifest" "authentik_ingress" {
-  manifest = {
-    "apiVersion" = "networking.k8s.io/v1"
-    "kind"       = "Ingress"
-    "metadata" = {
-      "name"      = "authentik"
-      "namespace" = "system"
-      "annotations" = {
-        # No external-dns annotation here, it's handled at the ingress service level
-        # as it needs an A record to work properly
-        "cert-manager.io/cluster-issuer"                   = "letsencrypt-staging"
-        "traefik.ingress.kubernetes.io/router.middlewares" = "system-redirect-to-https@kubernetescrd"
-        "traefik.ingress.kubernetes.io/router.entrypoints" = "web,websecure"
-      }
-      "labels" = {
-        "app.kubernetes.io/instance"   = "authentik-system"
-        "app.kubernetes.io/managed-by" = "Flux"
-        "app.kubernetes.io/name"       = "authentik"
-      }
-    }
-
-    "spec" = {
-      "ingressClassName" = "traefik"
-      "rules" = [{
-        "host" = "auth.${var.domain}"
-        "http" = {
-          "paths" = [{
-            "path"     = "/"
-            "pathType" = "Prefix"
-            "backend" = {
-              "service" = {
-                "name" = "authentik-server"
-                "port" = {
-                  "number" = 80
-                }
-              }
-            }
-          }]
-        }
-      }]
-
-      "tls" = [{
-        "hosts"      = ["auth.${var.domain}"]
-        "secretName" = "authentik-tls-secret"
-      }]
-    }
-  }
+  manifest = yamldecode(templatefile("${path.module}/manifests/authentik-ingress.yaml.tftpl", {
+    namespace = "system",
+    domain    = var.domain
+  }))
 }
