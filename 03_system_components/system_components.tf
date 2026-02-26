@@ -12,8 +12,6 @@ resource "kubernetes_namespace" "system" {
   metadata {
     name = "system"
   }
-
-  depends_on = [module.kubernetes]
 }
 
 module "authentik_database" {
@@ -24,7 +22,6 @@ module "authentik_database" {
 
   depends_on = [
     kubernetes_namespace.system,
-    module.postgresql
   ]
 }
 
@@ -33,7 +30,7 @@ module "system" {
 
   project             = var.project
   cluster_name        = var.kubernetes_cluster_name
-  native_routing_cidr = module.kubernetes.native_routing_cidr
+  native_routing_cidr = data.terraform_remote_state.platform.outputs.kubernetes_native_routing_cidr
   domain              = var.domain
 
   kubernetes_namespace = kubernetes_namespace.system.metadata[0].name

@@ -8,3 +8,8 @@ output "kubernetes_ca_certificate" {
   value       = base64decode(module.kubernetes.ca_certificate)
 
 }
+
+output "kubernetes_native_routing_cidr" {
+  description = "Kubernetes native rounting CIDR address"
+  value       = module.kubernetes.native_routing_cidr
+}

@@ -1,0 +1,15 @@
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-${env}
+spec:
+  acme:
+    email: ${project_owner_email}
+    privateKeySecretRef:
+      name: letsencrypt-${env}-key
+    server: ${server}
+    solvers:
+    - http01:
+        ingress:
+          class: traefik
